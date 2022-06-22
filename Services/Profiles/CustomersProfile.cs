@@ -15,6 +15,8 @@ namespace Application.Profiles
         {
             CreateMap<Customer, CustomerReadDTO>();
             CreateMap<CustomerCreateDTO, Customer>();
+            CreateMap<CustomerUpdateDTO, Customer>();
+            CreateMap<Customer, CustomerUpdateDTO>();
         }
     }
 }

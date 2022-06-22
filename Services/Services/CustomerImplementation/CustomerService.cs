@@ -27,16 +27,11 @@ namespace Application.Services.CustomerImplementation
             {
                 return false;
             }
-            
         }
 
         public void CreateCustomer(Customer customer)
         {
-            if (customer == null)
-            {
-                throw new ArgumentNullException(nameof(customer));
-            }
-
+            if (customer == null) throw new ArgumentNullException(nameof(customer));
             _repository.Create(customer);
         }
 
@@ -48,6 +43,19 @@ namespace Application.Services.CustomerImplementation
         public async Task<IEnumerable<Customer>> GetCustomers()
         {
             return await _repository.GetAllCustomersAsync();
+        }
+
+        public void UpdateCustomer(Customer customer)
+        {
+            if (customer == null) throw new ArgumentNullException(nameof(customer));
+            customer.UpdatedDate = DateTime.Now;
+            _repository.Update(customer);
+        }
+
+        public void DeleteCustomer(Customer customer)
+        {
+            if (customer == null) throw new ArgumentNullException(nameof(customer));
+            _repository.Delete(customer);
         }
     }
 }

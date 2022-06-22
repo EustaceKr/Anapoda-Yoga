@@ -12,6 +12,8 @@ namespace Application.Services.CustomerImplementation
         Task<IEnumerable<Customer>> GetCustomers();
         Task<Customer> GetCustomer(Guid id);
         void CreateCustomer(Customer customer);
+        void UpdateCustomer(Customer customer);
+        void DeleteCustomer(Customer customer);
         Task<bool> Complete();
     }
 }

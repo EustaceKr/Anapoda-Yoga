@@ -2,7 +2,7 @@
 using Application.Services.CustomerImplementation;
 using AutoMapper;
 using Data.Entities;
-using Data.Repositories.CustomerDAO;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
@@ -28,7 +28,7 @@ namespace Web.Controllers
         }
 
         //GET api/customers/{id}
-        [HttpGet("api/customers/{id:Guid}")]
+        [HttpGet("api/customers/{id:Guid}", Name = "GetCustomerById")]
         public async Task<ActionResult<CustomerReadDTO>> GetCustomerById(Guid id)
         {
             var customer = await _service.GetCustomer(id);
@@ -44,7 +44,54 @@ namespace Web.Controllers
             _service.CreateCustomer(customerModel);
             await _service.Complete();
 
-            return Ok(_mapper.Map<CustomerReadDTO>(customerModel));
+            var customerReadDto = _mapper.Map<CustomerReadDTO>(customerModel);
+
+            return CreatedAtRoute(nameof(GetCustomerById), new { Id = customerReadDto.Id }, customerReadDto);
+        }
+
+        //PUT api/customer/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateCustomer(Guid id, CustomerUpdateDTO customerUpdateDto)
+        {
+            var customer = await _service.GetCustomer(id);
+            if(customer == null) return NotFound();
+
+            _mapper.Map(customerUpdateDto, customer);
+            _service.UpdateCustomer(customer);
+            await _service.Complete();
+            return NoContent();
+        }
+
+        //PATCH api/customers/{id}
+        //"op":"replace",
+        //"path":"/firstName",
+        //"value":"Lalala"
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> PartialCustomerUpdate(Guid id, JsonPatchDocument<CustomerUpdateDTO> patchDoc)
+        {
+            var customer = await _service.GetCustomer(id);
+            if (customer == null) return NotFound();
+
+            var customerToPatch = _mapper.Map<CustomerUpdateDTO>(customer);
+            patchDoc.ApplyTo(customerToPatch, ModelState);
+            if (!TryValidateModel(customerToPatch)) return ValidationProblem(ModelState);
+
+            _mapper.Map(customerToPatch, customer);
+            _service.UpdateCustomer(customer);
+            await _service.Complete();
+            return NoContent();
+        }
+
+        //DELETE api/customers/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteCustomer(Guid id)
+        {
+            var customer = await _service.GetCustomer(id);
+            if (customer == null) return NotFound();
+
+            _service.DeleteCustomer(customer);
+            await _service.Complete();
+            return NoContent();
         }
     }
 }
