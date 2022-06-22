@@ -1,4 +1,7 @@
-﻿using Data.Entities;
+﻿using Data.Context;
+using Data.Entities;
+using Data.Repositories.GenericDAO;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,42 +10,18 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories.CustomerDAO
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
     {
-        public bool Create(Customer item)
+        public CustomerRepository(ApplicationDbContext context) : base(context)
         {
-            throw new NotImplementedException();
         }
-
-        public bool Delete(Customer item)
+        public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
         {
-            throw new NotImplementedException();
+            return await FindAll().OrderBy(c => c.LastName).ToListAsync();
         }
-
-        public IEnumerable<Customer> GetAll()
+        public async Task<Customer> GetCustomerByIdAsync(Guid ownerId)
         {
-             List<Customer> customers = new List<Customer>
-            {
-                new Customer(2,"lala","lolo"),
-                new Customer(3,"lele","lulu")
-            };
-
-            return customers;
-        }
-
-        public Customer GetById(int id)
-        {
-            return new Customer(1,"St","Kr");
-        }
-
-        public bool SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(Customer item)
-        {
-            throw new NotImplementedException();
+            return await FindByCondition(customer => customer.Id.Equals(ownerId)).FirstOrDefaultAsync();
         }
     }
 }

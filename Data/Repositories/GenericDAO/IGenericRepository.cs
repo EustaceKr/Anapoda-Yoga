@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,11 +9,11 @@ namespace Data.Repositories.GenericDAO
 {
     public interface IGenericRepository<T>
     {
-        IEnumerable<T> GetAll();
-        T GetById(int id);
-        bool Create(T item);
-        bool Update(T item);
-        bool Delete(T item);
-        bool SaveChangesAsync();
+        IQueryable<T> FindAll();
+        IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
+        void Create(T item);
+        void Update(T item);
+        void Delete(T item);
+        Task<bool> SaveChangesAsync();
     }
 }

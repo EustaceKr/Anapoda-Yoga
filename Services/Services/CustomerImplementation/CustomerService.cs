@@ -17,14 +17,37 @@ namespace Application.Services.CustomerImplementation
             _repository = repository;
         }
 
-        public Customer GetCustomer(int id)
+        public async Task<bool> Complete()
         {
-           return _repository.GetById(id);
+            try
+            {
+                return await _repository.SaveChangesAsync();
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+            
         }
 
-        public IEnumerable<Customer> GetCustomers()
+        public void CreateCustomer(Customer customer)
         {
-            return _repository.GetAll();
+            if (customer == null)
+            {
+                throw new ArgumentNullException(nameof(customer));
+            }
+
+            _repository.Create(customer);
+        }
+
+        public async Task<Customer> GetCustomer(Guid id)
+        {
+            return await _repository.GetCustomerByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<Customer>> GetCustomers()
+        {
+            return await _repository.GetAllCustomersAsync();
         }
     }
 }

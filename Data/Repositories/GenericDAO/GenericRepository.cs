@@ -1,43 +1,51 @@
-﻿using System;
+﻿using Data.Context;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Data.Repositories.GenericDAO
 {
-    public class GenericRepository<T> : IGenericRepository<T>
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
+        private readonly ApplicationDbContext _context;
 
-
-        public bool Create(T item)
+        public GenericRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context; 
         }
 
-        public bool Delete(T item)
+        public void Create(T entity)
         {
-            throw new NotImplementedException();
+            _context.Set<T>().Add(entity);
         }
 
-        public IEnumerable<T> GetAll()
+        public void Delete(T entity)
         {
-            throw new NotImplementedException();
+            _context.Set<T>().Remove(entity);
         }
 
-        public T GetById(int id)
+        public IQueryable<T> FindAll()
         {
-            throw new NotImplementedException();
+            return _context.Set<T>().AsNoTracking();
         }
 
-        public bool SaveChangesAsync()
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
+            return _context.Set<T>().Where(expression).AsNoTracking();
         }
 
-        public bool Update(T item)
+        public async Task<bool> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            return (await _context.SaveChangesAsync() >= 0);
+        }
+
+        public void Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
         }
     }
 }

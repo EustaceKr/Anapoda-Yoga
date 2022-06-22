@@ -9,7 +9,9 @@ namespace Application.Services.CustomerImplementation
 {
     public interface ICustomerService
     {
-        IEnumerable<Customer> GetCustomers();
-        Customer GetCustomer(int id);
+        Task<IEnumerable<Customer>> GetCustomers();
+        Task<Customer> GetCustomer(Guid id);
+        void CreateCustomer(Customer customer);
+        Task<bool> Complete();
     }
 }
