@@ -9,7 +9,7 @@ namespace Data.Repositories.GenericDAO
     public interface IGenericRepository<T>
     {
         IEnumerable<T> GetAll();
-        T GetById(Guid id);
+        T GetById(int id);
         bool Create(T item);
         bool Update(T item);
         bool Delete(T item);

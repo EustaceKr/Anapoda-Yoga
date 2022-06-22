@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories.CustomerDAO
 {
-    internal class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : ICustomerRepository
     {
         public bool Create(Customer item)
         {
@@ -30,7 +30,7 @@ namespace Data.Repositories.CustomerDAO
             return customers;
         }
 
-        public Customer GetById(Guid id)
+        public Customer GetById(int id)
         {
             return new Customer(1,"St","Kr");
         }

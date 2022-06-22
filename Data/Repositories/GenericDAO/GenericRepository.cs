@@ -25,7 +25,7 @@ namespace Data.Repositories.GenericDAO
             throw new NotImplementedException();
         }
 
-        public T GetById(Guid id)
+        public T GetById(int id)
         {
             throw new NotImplementedException();
         }
