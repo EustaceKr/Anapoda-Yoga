@@ -11,6 +11,6 @@ namespace Data.Repositories.CustomerDAO
     public interface ICustomerRepository : IGenericRepository<Customer>
     {
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
-        Task<Customer> GetCustomerByIdAsync(Guid customerId);
+        Task<Customer> GetCustomerByIdAsync(string customerId);
     }
 }

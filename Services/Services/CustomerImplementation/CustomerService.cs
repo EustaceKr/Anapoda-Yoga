@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Repositories.CustomerDAO;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,14 @@ namespace Application.Services.CustomerImplementation
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _repository;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<Customer> _userManager;
 
-        public CustomerService(ICustomerRepository repository)
+        public CustomerService(ICustomerRepository repository, RoleManager<IdentityRole> roleManager, UserManager<Customer> userManager)
         {
             _repository = repository;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public async Task<bool> Complete()
@@ -29,13 +34,16 @@ namespace Application.Services.CustomerImplementation
             }
         }
 
-        public void CreateCustomer(Customer customer)
+        public async Task<IdentityResult> CreateCustomer(Customer customer,string password)
         {
             if (customer == null) throw new ArgumentNullException(nameof(customer));
-            _repository.Create(customer);
+            customer.Id = Guid.NewGuid().ToString();
+            var result = await _userManager.CreateAsync(customer, password);
+            await _userManager.AddToRoleAsync(customer, CustomUserRoles.User);
+            return result;
         }
 
-        public async Task<Customer> GetCustomer(Guid id)
+        public async Task<Customer> GetCustomer(string id)
         {
             return await _repository.GetCustomerByIdAsync(id);
         }

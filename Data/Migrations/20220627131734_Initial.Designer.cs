@@ -4,6 +4,7 @@ using Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220627131734_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,19 +129,19 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dd481b71-3896-4889-aa6b-d5502cb8064f",
+                            Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0ca8852e-ebf3-4e29-bf3f-abcc2017a563",
-                            CreatedDate = new DateTime(2022, 6, 27, 17, 10, 39, 682, DateTimeKind.Local).AddTicks(6184),
+                            ConcurrencyStamp = "5d679900-e1bc-4f6c-9c69-b1c38c0ff323",
+                            CreatedDate = new DateTime(2022, 6, 27, 16, 17, 33, 851, DateTimeKind.Local).AddTicks(3669),
                             Email = "tade@tade.com",
                             EmailConfirmed = false,
                             FirstName = "St",
                             LastName = "Kr",
                             LockoutEnabled = false,
                             NormalizedUserName = "EUSTACE",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGUYw2Lwnx+AxrasarV+jPFbXQ8BYWs3DkQTOyf94i6VxNWZfpQAHAYxBBO9SVhobQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELh4q+A47j7mBhuw8h3XhK/y8THgN9dZN3HlsyVHOLgJM7156FtnbG+4ePxJLCLRTA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3c73a90a-7144-468b-9caf-c76f10eb993d",
+                            SecurityStamp = "e0e72a32-8738-473f-ad1a-571daccf68d4",
                             TwoFactorEnabled = false,
                             UserName = "eustace"
                         });
@@ -174,17 +176,10 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6bd94697-f54e-43eb-a66d-6eeb99a1e433",
-                            ConcurrencyStamp = "ebf7cc8e-13dc-4a20-ba20-57848c8a8385",
+                            Id = "341743f0-asd2–42de-afbf-59kmkkmk72cf6",
+                            ConcurrencyStamp = "fd5b3926-cd00-424d-8b14-d67f7e7159bf",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "74737dda-843b-479e-a197-228559f4ffe5",
-                            ConcurrencyStamp = "b286561d-6ea3-413a-9fdf-37cc30db5734",
-                            Name = "User",
-                            NormalizedName = "USER"
                         });
                 });
 
@@ -277,8 +272,8 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "dd481b71-3896-4889-aa6b-d5502cb8064f",
-                            RoleId = "6bd94697-f54e-43eb-a66d-6eeb99a1e433"
+                            UserId = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
+                            RoleId = "341743f0-asd2–42de-afbf-59kmkkmk72cf6"
                         });
                 });
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Data.Entities
 {
-    public class Customer
+    public class Customer : IdentityUser
     {
-        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? MobileNumber { get; set; }
         public DateTime? DateOfBirth { get; set; }
@@ -25,7 +24,19 @@ namespace Data.Entities
 
         public Customer(string firstName, string lastName)
         {
-            Id = new Guid();
+            Id = new Guid().ToString();
+            FirstName = firstName;
+            LastName = lastName;
+            CreatedDate = DateTime.Now;
+            SecurityStamp = Guid.NewGuid().ToString();
+        }
+
+        public Customer(string id, string email, string userName, string normalizedUserName, string firstName, string lastName)
+        {
+            Id = id;
+            Email = email;
+            UserName = userName;
+            NormalizedUserName = normalizedUserName;
             FirstName = firstName;
             LastName = lastName;
             CreatedDate = DateTime.Now;

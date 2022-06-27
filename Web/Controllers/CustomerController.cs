@@ -1,7 +1,9 @@
 ﻿using Application.DTOs.CustomerDTOs;
 using Application.Services.CustomerImplementation;
+using Application.UserAuthentication;
 using AutoMapper;
 using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +11,7 @@ namespace Web.Controllers
 {
     [Route("api/customers")]
     [ApiController]
+    [Authorize(Roles = CustomUserRoles.Admin)]
     public class CustomerController : Controller
     {
         private readonly ICustomerService _service;
@@ -20,7 +23,7 @@ namespace Web.Controllers
         }
 
         //GET api/customers
-        [HttpGet("api/customers")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerReadDTO>>> GetAllCustomers()
         {
             var customers = await _service.GetCustomers();
@@ -28,8 +31,8 @@ namespace Web.Controllers
         }
 
         //GET api/customers/{id}
-        [HttpGet("api/customers/{id:Guid}", Name = "GetCustomerById")]
-        public async Task<ActionResult<CustomerReadDTO>> GetCustomerById(Guid id)
+        [HttpGet("{id:Guid}", Name = "GetCustomerById")]
+        public async Task<ActionResult<CustomerReadDTO>> GetCustomerById(string id)
         {
             var customer = await _service.GetCustomer(id);
             if(customer != null) return Ok(_mapper.Map<CustomerReadDTO>(customer));
@@ -41,17 +44,17 @@ namespace Web.Controllers
         public async Task<ActionResult<CustomerReadDTO>> CreateCustomer(CustomerCreateDTO customerCreateDto)
         {
             var customerModel = _mapper.Map<Customer>(customerCreateDto);
-            _service.CreateCustomer(customerModel);
-            await _service.Complete();
-
+            var result = await _service.CreateCustomer(customerModel,customerCreateDto.Password);
+            if (result.Succeeded) await _service.Complete();
+            else return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            
             var customerReadDto = _mapper.Map<CustomerReadDTO>(customerModel);
-
             return CreatedAtRoute(nameof(GetCustomerById), new { Id = customerReadDto.Id }, customerReadDto);
         }
 
         //PUT api/customer/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateCustomer(Guid id, CustomerUpdateDTO customerUpdateDto)
+        public async Task<ActionResult> UpdateCustomer(string id, CustomerUpdateDTO customerUpdateDto)
         {
             var customer = await _service.GetCustomer(id);
             if(customer == null) return NotFound();
@@ -67,7 +70,7 @@ namespace Web.Controllers
         //"path":"/firstName",
         //"value":"Lalala"
         [HttpPatch("{id}")]
-        public async Task<ActionResult> PartialCustomerUpdate(Guid id, JsonPatchDocument<CustomerUpdateDTO> patchDoc)
+        public async Task<ActionResult> PartialCustomerUpdate(string id, JsonPatchDocument<CustomerUpdateDTO> patchDoc)
         {
             var customer = await _service.GetCustomer(id);
             if (customer == null) return NotFound();
@@ -84,7 +87,7 @@ namespace Web.Controllers
 
         //DELETE api/customers/{id}
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteCustomer(Guid id)
+        public async Task<ActionResult> DeleteCustomer(string id)
         {
             var customer = await _service.GetCustomer(id);
             if (customer == null) return NotFound();
