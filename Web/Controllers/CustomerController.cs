@@ -11,7 +11,7 @@ namespace Web.Controllers
 {
     [Route("api/customers")]
     [ApiController]
-    [Authorize(Roles = CustomUserRoles.Admin)]
+    //[Authorize(Roles = CustomUserRoles.Admin)]
     public class CustomerController : Controller
     {
         private readonly ICustomerService _service;
