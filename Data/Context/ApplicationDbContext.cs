@@ -30,10 +30,10 @@ namespace Data.Context
 
             //Seed Admin
             builder.Entity<IdentityRole>().HasData(new IdentityRole { Id = Admin_Role_id, Name = CustomUserRoles.Admin, NormalizedName = CustomUserRoles.Admin.ToUpper() });
-            Customer admin = new Customer(Admin_id,"tade@tade.com","eustace","EUSTACE","St","Kr" );
+            Customer admin = new Customer(Admin_id,"tade@tade.com","sa","SA","St","Kr" );
             builder.Entity<Customer>().HasData(admin);
             PasswordHasher<Customer> ph = new PasswordHasher<Customer>();
-            admin.PasswordHash = ph.HashPassword(admin, "MyPass123!");
+            admin.PasswordHash = ph.HashPassword(admin, "Anapoda123!");
             builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string> { RoleId = Admin_Role_id, UserId = Admin_id });
 
             //Seed UserRole
