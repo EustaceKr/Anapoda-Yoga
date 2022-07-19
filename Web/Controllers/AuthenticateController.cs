@@ -1,4 +1,4 @@
-﻿using Application.DTOs.LoginDTO;
+﻿using Application.DTOs.LoginDTOs;
 using Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

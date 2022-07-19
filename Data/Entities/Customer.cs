@@ -21,6 +21,7 @@ namespace Data.Entities
         public string? PostalCode { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public List<Reservation> Reservations { get; set; }
 
         public Customer(string firstName, string lastName)
         {

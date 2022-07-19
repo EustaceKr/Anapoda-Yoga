@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -58,6 +58,21 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "YogaClassTypes",
+                columns: table => new
+                {
+                    YogaClassTypeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_YogaClassTypes", x => x.YogaClassTypeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -166,20 +181,70 @@ namespace Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "YogaClasses",
+                columns: table => new
+                {
+                    YogaClassId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    YogaClassTypeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_YogaClasses", x => x.YogaClassId);
+                    table.ForeignKey(
+                        name: "FK_YogaClasses_YogaClassTypes_YogaClassTypeId",
+                        column: x => x.YogaClassTypeId,
+                        principalTable: "YogaClassTypes",
+                        principalColumn: "YogaClassTypeId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reservations",
+                columns: table => new
+                {
+                    ReservationId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    YogaClassId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservations", x => x.ReservationId);
+                    table.ForeignKey(
+                        name: "FK_Reservations_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reservations_YogaClasses_YogaClassId",
+                        column: x => x.YogaClassId,
+                        principalTable: "YogaClasses",
+                        principalColumn: "YogaClassId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "fd5b3926-cd00-424d-8b14-d67f7e7159bf", "Admin", "ADMIN" });
+                values: new object[] { "2b550c26-19a7-4257-8dd6-d563b5b4e33f", "4445a3e3-8d64-4891-bbdd-2a15a4f847fd", "Admin", "ADMIN" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "aadb8aba-9ffd-4ddc-9cc9-fa8c214d1506", "1d2ea3ec-64c7-401c-b04e-2fbe2f7e17c9", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Adress", "City", "ConcurrencyStamp", "CreatedDate", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "MobileNumber", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "Phone", "PhoneNumber", "PhoneNumberConfirmed", "PostalCode", "SecurityStamp", "Sex", "State", "TwoFactorEnabled", "UpdatedDate", "UserName" },
-                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, null, null, "5d679900-e1bc-4f6c-9c69-b1c38c0ff323", new DateTime(2022, 6, 27, 16, 17, 33, 851, DateTimeKind.Local).AddTicks(3669), null, "tade@tade.com", false, "St", "Kr", false, null, null, null, "EUSTACE", "AQAAAAEAACcQAAAAELh4q+A47j7mBhuw8h3XhK/y8THgN9dZN3HlsyVHOLgJM7156FtnbG+4ePxJLCLRTA==", null, null, false, null, "e0e72a32-8738-473f-ad1a-571daccf68d4", null, null, false, null, "eustace" });
+                values: new object[] { "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d", 0, null, null, "d5f6571e-2d5d-49d8-9016-1e148e6fc5ee", new DateTime(2022, 7, 19, 15, 27, 45, 12, DateTimeKind.Local).AddTicks(9931), null, "tade@tade.com", false, "St", "Kr", false, null, null, null, "SA", "AQAAAAEAACcQAAAAEAPdsm1t9TJVSpDzMJ+idIGGDdlLYn4ijIxiZTUCKKd7f2/u9cWyjWIfQIn4fn6xyA==", null, null, false, null, "c6dca62a-8f80-4a61-954e-7d3245bf1f2e", null, null, false, null, "sa" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "02174cf0–9412–4cfe-afbf-59f706d72cf6" });
+                values: new object[] { "2b550c26-19a7-4257-8dd6-d563b5b4e33f", "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -219,6 +284,21 @@ namespace Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_CustomerId",
+                table: "Reservations",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_YogaClassId",
+                table: "Reservations",
+                column: "YogaClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_YogaClasses_YogaClassTypeId",
+                table: "YogaClasses",
+                column: "YogaClassTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -239,10 +319,19 @@ namespace Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Reservations");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "YogaClasses");
+
+            migrationBuilder.DropTable(
+                name: "YogaClassTypes");
         }
     }
 }

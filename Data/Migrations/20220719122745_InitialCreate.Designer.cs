@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220627141039_Initial2")]
-    partial class Initial2
+    [Migration("20220719122745_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -129,22 +129,90 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dd481b71-3896-4889-aa6b-d5502cb8064f",
+                            Id = "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0ca8852e-ebf3-4e29-bf3f-abcc2017a563",
-                            CreatedDate = new DateTime(2022, 6, 27, 17, 10, 39, 682, DateTimeKind.Local).AddTicks(6184),
+                            ConcurrencyStamp = "d5f6571e-2d5d-49d8-9016-1e148e6fc5ee",
+                            CreatedDate = new DateTime(2022, 7, 19, 15, 27, 45, 12, DateTimeKind.Local).AddTicks(9931),
                             Email = "tade@tade.com",
                             EmailConfirmed = false,
                             FirstName = "St",
                             LastName = "Kr",
                             LockoutEnabled = false,
-                            NormalizedUserName = "EUSTACE",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGUYw2Lwnx+AxrasarV+jPFbXQ8BYWs3DkQTOyf94i6VxNWZfpQAHAYxBBO9SVhobQ==",
+                            NormalizedUserName = "SA",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAPdsm1t9TJVSpDzMJ+idIGGDdlLYn4ijIxiZTUCKKd7f2/u9cWyjWIfQIn4fn6xyA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3c73a90a-7144-468b-9caf-c76f10eb993d",
+                            SecurityStamp = "c6dca62a-8f80-4a61-954e-7d3245bf1f2e",
                             TwoFactorEnabled = false,
-                            UserName = "eustace"
+                            UserName = "sa"
                         });
+                });
+
+            modelBuilder.Entity("Data.Entities.Reservation", b =>
+                {
+                    b.Property<string>("ReservationId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("YogaClassId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ReservationId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("YogaClassId");
+
+                    b.ToTable("Reservations");
+                });
+
+            modelBuilder.Entity("Data.Entities.YogaClass", b =>
+                {
+                    b.Property<string>("YogaClassId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("YogaClassTypeId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("YogaClassId");
+
+                    b.HasIndex("YogaClassTypeId");
+
+                    b.ToTable("YogaClasses");
+                });
+
+            modelBuilder.Entity("Data.Entities.YogaClassType", b =>
+                {
+                    b.Property<string>("YogaClassTypeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("YogaClassTypeId");
+
+                    b.ToTable("YogaClassTypes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -176,15 +244,15 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6bd94697-f54e-43eb-a66d-6eeb99a1e433",
-                            ConcurrencyStamp = "ebf7cc8e-13dc-4a20-ba20-57848c8a8385",
+                            Id = "2b550c26-19a7-4257-8dd6-d563b5b4e33f",
+                            ConcurrencyStamp = "4445a3e3-8d64-4891-bbdd-2a15a4f847fd",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "74737dda-843b-479e-a197-228559f4ffe5",
-                            ConcurrencyStamp = "b286561d-6ea3-413a-9fdf-37cc30db5734",
+                            Id = "aadb8aba-9ffd-4ddc-9cc9-fa8c214d1506",
+                            ConcurrencyStamp = "1d2ea3ec-64c7-401c-b04e-2fbe2f7e17c9",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -279,8 +347,8 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "dd481b71-3896-4889-aa6b-d5502cb8064f",
-                            RoleId = "6bd94697-f54e-43eb-a66d-6eeb99a1e433"
+                            UserId = "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d",
+                            RoleId = "2b550c26-19a7-4257-8dd6-d563b5b4e33f"
                         });
                 });
 
@@ -301,6 +369,36 @@ namespace Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Data.Entities.Reservation", b =>
+                {
+                    b.HasOne("Data.Entities.Customer", "Customer")
+                        .WithMany("Reservations")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.YogaClass", "YogaClass")
+                        .WithMany("Reservations")
+                        .HasForeignKey("YogaClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("YogaClass");
+                });
+
+            modelBuilder.Entity("Data.Entities.YogaClass", b =>
+                {
+                    b.HasOne("Data.Entities.YogaClassType", "YogaClassType")
+                        .WithMany("YogaClasses")
+                        .HasForeignKey("YogaClassTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("YogaClassType");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -352,6 +450,21 @@ namespace Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Entities.Customer", b =>
+                {
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("Data.Entities.YogaClass", b =>
+                {
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("Data.Entities.YogaClassType", b =>
+                {
+                    b.Navigation("YogaClasses");
                 });
 #pragma warning restore 612, 618
         }

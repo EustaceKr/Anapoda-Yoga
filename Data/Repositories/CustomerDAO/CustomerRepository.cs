@@ -19,9 +19,9 @@ namespace Data.Repositories.CustomerDAO
         {
             return await FindAll().OrderBy(c => c.LastName).ToListAsync();
         }
-        public async Task<Customer> GetCustomerByIdAsync(string ownerId)
+        public async Task<Customer> GetCustomerByIdAsync(string customerId)
         {
-            return await FindByCondition(customer => customer.Id.Equals(ownerId)).FirstOrDefaultAsync();
+            return await FindByCondition(customer => customer.Id.Equals(customerId)).FirstOrDefaultAsync();
         }
     }
 }

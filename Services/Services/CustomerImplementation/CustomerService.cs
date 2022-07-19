@@ -12,13 +12,11 @@ namespace Application.Services.CustomerImplementation
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _repository;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<Customer> _userManager;
 
-        public CustomerService(ICustomerRepository repository, RoleManager<IdentityRole> roleManager, UserManager<Customer> userManager)
+        public CustomerService(ICustomerRepository repository, UserManager<Customer> userManager)
         {
             _repository = repository;
-            _roleManager = roleManager;
             _userManager = userManager;
         }
 

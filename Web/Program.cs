@@ -1,7 +1,9 @@
 using Application.Services.CustomerImplementation;
+using Application.Services.YogaClassTypesImplementation;
 using Data.Context;
 using Data.Entities;
 using Data.Repositories.CustomerDAO;
+using Data.Repositories.YogaClassTypeDAO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +64,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IYogaClassTypeRepository, YogaClassTypeRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IYogaClassTypeService, YogaClassTypeService>();
 
 var app = builder.Build();
 

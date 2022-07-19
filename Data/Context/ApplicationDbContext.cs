@@ -18,6 +18,10 @@ namespace Data.Context
         }
 
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<YogaClass> YogaClasses { get; set; }
+        public DbSet<YogaClassType> YogaClassTypes { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,7 +34,7 @@ namespace Data.Context
 
             //Seed Admin
             builder.Entity<IdentityRole>().HasData(new IdentityRole { Id = Admin_Role_id, Name = CustomUserRoles.Admin, NormalizedName = CustomUserRoles.Admin.ToUpper() });
-            Customer admin = new Customer(Admin_id,"tade@tade.com","sa","SA","St","Kr" );
+            Customer admin = new Customer(Admin_id, "tade@tade.com", "sa", "SA", "St", "Kr");
             builder.Entity<Customer>().HasData(admin);
             PasswordHasher<Customer> ph = new PasswordHasher<Customer>();
             admin.PasswordHash = ph.HashPassword(admin, "Anapoda123!");
@@ -39,7 +43,6 @@ namespace Data.Context
             //Seed UserRole
             builder.Entity<IdentityRole>().HasData(new IdentityRole { Id = User_Role_id, Name = CustomUserRoles.User, NormalizedName = CustomUserRoles.User.ToUpper() });
         }
-
         
     }
 }

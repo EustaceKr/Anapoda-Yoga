@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.LoginDTO
+namespace Application.DTOs.LoginDTOs
 {
     public class LoginDTO
     {
