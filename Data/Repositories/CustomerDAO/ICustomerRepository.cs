@@ -12,5 +12,6 @@ namespace Data.Repositories.CustomerDAO
     {
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
         Task<Customer> GetCustomerByIdAsync(string customerId);
+        Task<Customer> GetUserIdFromUserName(string userName);
     }
 }

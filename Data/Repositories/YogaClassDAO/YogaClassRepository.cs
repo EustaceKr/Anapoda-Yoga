@@ -15,9 +15,9 @@ namespace Data.Repositories.YogaClassDAO
         public YogaClassRepository(ApplicationDbContext context) : base(context)
         {
         }
-        public async Task<IEnumerable<YogaClass>> GetAllYogaClassesAsync()
+        public async Task<IEnumerable<YogaClass>> GetAllYogaClassesByDateAsync(DateTime time)
         {
-            return await FindAll().OrderBy(c => c.Date).ToListAsync();
+            return await FindAll().OrderBy(c => c.Date).Where(x => x.Date.Date == time.Date).Include(x => x.Reservations).ToListAsync();
         }
         public async Task<YogaClass> GetYogaClassByIdAsync(string yogaClassId)
         {

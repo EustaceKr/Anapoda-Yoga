@@ -9,6 +9,9 @@ namespace Application.Services.ReservationImplementation
 {
     public interface IReservationService
     {
-        
+        Task<IEnumerable<Reservation>> GetReservationsByUser(string userId);
+        void CreateReservation(Reservation reservation);
+        Task<bool> CheckReservation(Reservation reservation, Customer user);
+        Task<bool> Complete();
     }
 }

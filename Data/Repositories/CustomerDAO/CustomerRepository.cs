@@ -23,5 +23,10 @@ namespace Data.Repositories.CustomerDAO
         {
             return await FindByCondition(customer => customer.Id.Equals(customerId)).FirstOrDefaultAsync();
         }
+
+        public async Task<Customer> GetUserIdFromUserName(string userName)
+        {
+            return await (FindByCondition(customer => customer.UserName == userName)).FirstOrDefaultAsync();
+        }
     }
 }

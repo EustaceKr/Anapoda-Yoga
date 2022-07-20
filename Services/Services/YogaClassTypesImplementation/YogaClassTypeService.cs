@@ -16,17 +16,15 @@ namespace Application.Services.YogaClassTypesImplementation
         {
             _repository = repository;
         }
-
-        public async Task<bool> Complete()
+        
+        public async Task<IEnumerable<YogaClassType>> GetYogaClassTypes()
         {
-            try
-            {
-                return await _repository.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return await _repository.GetAllYogaClassTypesAsync();
+        }
+
+        public async Task<YogaClassType> GetYogaClassType(string id)
+        {
+            return await _repository.GetYogaClassTypeByIdAsync(id);
         }
 
         public void CreateYogaClassType(YogaClassType yogaClassType)
@@ -42,20 +40,21 @@ namespace Application.Services.YogaClassTypesImplementation
             _repository.Delete(yogaClassType);
         }
 
-        public async Task<YogaClassType> GetYogaClassType(string id)
-        {
-            return await _repository.GetYogaClassTypeByIdAsync(id);
-        }
-
-            public async Task<IEnumerable<YogaClassType>> GetYogaClassTypes()
-        {
-            return await _repository.GetAllYogaClassTypesAsync();
-        }
-
         public void UpdateYogaClassType(YogaClassType yogaClassType)
         {
             if (yogaClassType == null) throw new ArgumentNullException(nameof(yogaClassType));
             _repository.Update(yogaClassType);
+        }
+        public async Task<bool> Complete()
+        {
+            try
+            {
+                return await _repository.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

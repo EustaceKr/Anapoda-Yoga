@@ -62,7 +62,7 @@ namespace Web.Controllers
             _mapper.Map(yogaClassTypeUpdateDto, yogaClassType);
             _service.UpdateYogaClassType(yogaClassType);
             await _service.Complete();
-            return NoContent();
+            return Ok();
         }
 
         //PATCH api/yogaclasstypes/{id}
@@ -82,7 +82,7 @@ namespace Web.Controllers
             _mapper.Map(yogaClassTypeToPatch, yogaClassType);
             _service.UpdateYogaClassType(yogaClassType);
             await _service.Complete();
-            return NoContent();
+            return Ok();
         }
 
         //DELETE api/yogaclasstypes/{id}
@@ -94,7 +94,7 @@ namespace Web.Controllers
 
             _service.DeleteYogaClassType(yogaClassType);
             await _service.Complete();
-            return NoContent();
+            return Ok();
         }
     }
 }

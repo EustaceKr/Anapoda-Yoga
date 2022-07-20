@@ -11,7 +11,7 @@ namespace Data.Repositories.GenericDAO
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context;
+        public ApplicationDbContext _context;
 
         public GenericRepository(ApplicationDbContext context)
         {

@@ -12,6 +12,7 @@ namespace Application.Services.CustomerImplementation
     {
         Task<IEnumerable<Customer>> GetCustomers();
         Task<Customer> GetCustomer(string id);
+        Task<Customer> GetUserIdFromUserName(string userName);
         Task<IdentityResult> CreateCustomer(Customer customer,string password);
         void UpdateCustomer(Customer customer);
         void DeleteCustomer(Customer customer);

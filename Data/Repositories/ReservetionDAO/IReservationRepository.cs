@@ -10,7 +10,8 @@ namespace Data.Repositories.ReservetionDAO
 {
     public interface IReservationRepository : IGenericRepository<Reservation>
     {
-        Task<IEnumerable<Reservation>> GetAllReservationsAsync();
+        Task<IEnumerable<Reservation>> GetAllReservationsByUserAsync(string userId);
         Task<Reservation> GetReservationByIdAsync(string customerId);
+        Task<IEnumerable<Reservation>> GetReservationsFromYogaClass(string yogaClassId);
     }
 }

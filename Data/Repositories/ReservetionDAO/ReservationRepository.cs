@@ -15,13 +15,18 @@ namespace Data.Repositories.ReservetionDAO
         public ReservationRepository(ApplicationDbContext context) : base(context)
         {
         }
-        public async Task<IEnumerable<Reservation>> GetAllReservationsAsync()
+        public async Task<IEnumerable<Reservation>> GetAllReservationsByUserAsync(string userId)
         {
-            return await FindAll().OrderBy(c => c.CreatedAt).ToListAsync();
+            return await FindByCondition(reservation => reservation.CustomerId == userId).ToListAsync();
         }
         public async Task<Reservation> GetReservationByIdAsync(string reservationId)
         {
             return await FindByCondition(reservation => reservation.ReservationId.Equals(reservationId)).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Reservation>> GetReservationsFromYogaClass(string yogaClassId)
+        {
+            return await FindByCondition(reservation => reservation.YogaClassId == yogaClassId).ToListAsync();
         }
     }
 }

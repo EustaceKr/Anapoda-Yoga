@@ -9,6 +9,5 @@ namespace Application.DTOs.ReservationDTOs
     public class ReservationCreateDTO
     {
         public string YogaClassId { get; set; }
-        public string CustomerId { get; set; }
     }
 }

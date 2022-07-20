@@ -62,7 +62,7 @@ namespace Web.Controllers
             _mapper.Map(customerUpdateDto, customer);
             _service.UpdateCustomer(customer);
             await _service.Complete();
-            return NoContent();
+            return Ok();
         }
 
         //PATCH api/customers/{id}
@@ -82,7 +82,7 @@ namespace Web.Controllers
             _mapper.Map(customerToPatch, customer);
             _service.UpdateCustomer(customer);
             await _service.Complete();
-            return NoContent();
+            return Ok();
         }
 
         //DELETE api/customers/{id}
@@ -94,7 +94,7 @@ namespace Web.Controllers
 
             _service.DeleteCustomer(customer);
             await _service.Complete();
-            return NoContent();
+            return Ok();
         }
     }
 }

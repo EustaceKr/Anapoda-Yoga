@@ -19,17 +19,15 @@ namespace Application.Services.CustomerImplementation
             _repository = repository;
             _userManager = userManager;
         }
-
-        public async Task<bool> Complete()
+        
+        public async Task<IEnumerable<Customer>> GetCustomers()
         {
-            try
-            {
-                return await _repository.SaveChangesAsync();
-            }
-            catch(Exception)
-            {
-                return false;
-            }
+            return await _repository.GetAllCustomersAsync();
+        }
+
+        public async Task<Customer> GetCustomer(string id)
+        {
+            return await _repository.GetCustomerByIdAsync(id);
         }
 
         public async Task<IdentityResult> CreateCustomer(Customer customer,string password)
@@ -39,16 +37,6 @@ namespace Application.Services.CustomerImplementation
             var result = await _userManager.CreateAsync(customer, password);
             await _userManager.AddToRoleAsync(customer, CustomUserRoles.User);
             return result;
-        }
-
-        public async Task<Customer> GetCustomer(string id)
-        {
-            return await _repository.GetCustomerByIdAsync(id);
-        }
-
-        public async Task<IEnumerable<Customer>> GetCustomers()
-        {
-            return await _repository.GetAllCustomersAsync();
         }
 
         public void UpdateCustomer(Customer customer)
@@ -62,6 +50,23 @@ namespace Application.Services.CustomerImplementation
         {
             if (customer == null) throw new ArgumentNullException(nameof(customer));
             _repository.Delete(customer);
+        }
+        public async Task<Customer> GetUserIdFromUserName(string userName)
+        {
+            if(userName == null || userName == "") throw new ArgumentNullException(nameof(userName));
+            return await _repository.GetUserIdFromUserName(userName);
+        }
+
+        public async Task<bool> Complete()
+        {
+            try
+            {
+                return await _repository.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

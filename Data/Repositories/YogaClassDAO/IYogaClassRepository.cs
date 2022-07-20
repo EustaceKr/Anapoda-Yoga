@@ -10,7 +10,7 @@ namespace Data.Repositories.YogaClassDAO
 {
     public interface IYogaClassRepository : IGenericRepository<YogaClass>
     {
-        Task<IEnumerable<YogaClass>> GetAllYogaClassesAsync();
+        Task<IEnumerable<YogaClass>> GetAllYogaClassesByDateAsync(DateTime time);
         Task<YogaClass> GetYogaClassByIdAsync(string customerId);
     }
 }
