@@ -6,3 +6,5 @@ npm install vuex@next --save
 npm install vue-router@4
 npm install babel-eslint --save-dev
 npm install axios
+npm install bootstrap@4 jquery popper.js
+npm install vee-validate@4 yup

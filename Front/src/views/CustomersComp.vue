@@ -13,6 +13,7 @@
 
 <script>
 import axios from 'axios'
+import authHeader from '../services/auth-header';
 
 export default {
   name: "CustomersComp",
@@ -23,7 +24,7 @@ export default {
   },
   mounted(){
     axios
-      .get('api/customers')
+      .get('api/customers', { headers: authHeader() })
       .then((response) => {
     this.customers = response.data})
   },

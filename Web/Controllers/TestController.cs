@@ -6,7 +6,7 @@ namespace Web.Controllers
 {
     [Route("api/test")]
     [ApiController]
-    [Authorize(Roles = CustomUserRoles.User)]
+    [Authorize]
     public class TestController : Controller
     {
         [HttpGet]

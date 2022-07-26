@@ -9,7 +9,10 @@
       <li><router-link class="link" :to="{name:'AboutComp'}">Σχετικα με μας</router-link></li>
       <li><router-link class="link" :to="{name:''}">Κρατησεις</router-link></li>
       <li><router-link class="link" :to="{name:''}">Blog</router-link></li>
-      <li><router-link class="link" :to="{name:'CustomersComp'}">Πελάτες</router-link></li>
+      <li><router-link class="link" :to="{name:'CustomersComp'}">Πελατες</router-link></li>
+      <li><router-link class="link" :to="{name:'TestComp'}">Test</router-link></li>
+      <li><router-link class="link" :to="{name:'LoginComp'}">Login</router-link></li>
+      <li><a class="link" @click.prevent="logOut">LogOut</a></li>
     </ul>
     <div class="icon">
       <i @click="toggleMobileNav" v-show="mobile" class="far fa-bars" :class="{'icon-active' : mobileNav}"></i>
@@ -58,6 +61,7 @@ export default {
       }
       this.scrolledNav = false;
     },
+
     checkScreen(){
       this.windowWidth = window.innerWidth;
       if(this.windowWidth <= 750){
@@ -67,6 +71,10 @@ export default {
       this.mobile = false;
       this.mobileNav = false;
       return;
+    },
+    logOut() {
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/Home');
     }
   },
   

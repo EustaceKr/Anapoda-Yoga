@@ -25,7 +25,6 @@ namespace Web.Controllers
             _configuration = configuration;
         }
         [HttpPost]
-        [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
