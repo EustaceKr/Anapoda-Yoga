@@ -5,3 +5,4 @@ npm install -D sass-loader sass
 npm install vuex@next --save
 npm install vue-router@4
 npm install babel-eslint --save-dev
+npm install axios

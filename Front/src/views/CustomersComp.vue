@@ -1,36 +1,35 @@
 <template>
-    
-    <h1>lelele</h1>
-    <h1>lelele</h1>
-    <h1>lelele</h1>
-    <h1>lelele</h1>
-    {{customers}}
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <div v-for="customer in customers" :key="customer.id">
+      <p hidden="true">{{customer.id}}</p>
+      <h2>Full Name: {{customer.firstName}} {{customer.lastName}}</h2>
+      <p>Created at: {{customer.createdDate}}</p>
+      <p>Updated at: {{customer.updatedDate}}</p>
+    </div>
 </template>
 
 <script>
-let customers;
-const API_URL = 'https://localhost:7198/api/customers'
+import axios from 'axios'
 
 export default {
   name: "CustomersComp",
-  components: {},
   data(){
-    return {
-        customers,
+    return{
+      customers: []
     }
   },
-  created(){
-    this.fetchData()
+  mounted(){
+    axios
+      .get('api/customers')
+      .then((response) => {
+    this.customers = response.data})
   },
-  methods:{
-    async fetchData() {
-        this.customers = await (await fetch(API_URL)).json()
-    }
-  }
 }
-
 </script>
 
-<style lang="scss" scoped>
 
+<style lang="scss" scoped>
 </style>
