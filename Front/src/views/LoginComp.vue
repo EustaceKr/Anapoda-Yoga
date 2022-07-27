@@ -39,6 +39,7 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+
 export default {
   name: "LoginComp",
   components: {
@@ -64,7 +65,7 @@ export default {
   },
   created() {
     if (this.loggedIn) {
-      this.$router.push("/Home");
+      this.$router.push("/");
     }
   },
   methods: {
@@ -72,7 +73,8 @@ export default {
       this.loading = true;
       this.$store.dispatch("auth/login", user).then(
         () => {
-          this.$router.push("/Home");
+            if(localStorage.getItem('role') == '["User"]') this.$router.push({name: "TestComp"});
+            else if (localStorage.getItem('role') == '["Admin"]') this.$router.push({name: "CustomersComp"})
         },
         (error) => {
           this.loading = false;

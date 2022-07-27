@@ -12,7 +12,7 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult TestMethod()
         {
-            return Ok("lalala");
+            return Ok("2xlalala");
         }
     }
 }

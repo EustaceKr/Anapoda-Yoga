@@ -8,7 +8,7 @@ import TestComp from "../views/TestComp.vue"
 
 const routes = [
   {
-    path: "/Home",
+    path: "/",
     name: "HomeComp",
     component: HomeComp,
   },
@@ -28,7 +28,7 @@ const routes = [
     component: LoginComp
   },
   {
-    path: "/Test",
+    path: "/",
     name: "TestComp",
     component: TestComp
   }

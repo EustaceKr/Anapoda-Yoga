@@ -74,7 +74,7 @@ export default {
     },
     logOut() {
       this.$store.dispatch('auth/logout');
-      this.$router.push('/Home');
+      this.$router.push({name: "HomeComp"});
     }
   },
   
