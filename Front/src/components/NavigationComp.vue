@@ -12,7 +12,7 @@
       <li><router-link class="link" :to="{name:'CustomersComp'}">Πελατες</router-link></li>
       <li><router-link class="link" :to="{name:'TestComp'}">Test</router-link></li>
       <li><router-link class="link" :to="{name:'LoginComp'}">Login</router-link></li>
-      <li><a class="link" @click.prevent="logOut">LogOut</a></li>
+      <li><a v-if="auth.state.status.loggedIn" class="link" @click.prevent="logOut">LogOut</a></li>
     </ul>
     <div class="icon">
       <i @click="toggleMobileNav" v-show="mobile" class="far fa-bars" :class="{'icon-active' : mobileNav}"></i>
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { auth } from "../store/auth.module";
 export default {
   name: "NavigationComp",
   data(){
@@ -39,6 +40,7 @@ export default {
       mobile: null,
       mobileNav: null,
       windowWidth: null,
+      auth
     };
   },
   created(){
