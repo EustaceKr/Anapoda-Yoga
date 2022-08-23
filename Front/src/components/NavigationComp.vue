@@ -7,12 +7,12 @@
     <ul v-show="!mobile" class="navigation">
       <li><router-link class="link" :to="{name:'HomeComp'}">Αρχικη</router-link></li>
       <li><router-link class="link" :to="{name:'AboutComp'}">Σχετικα με μας</router-link></li>
-      <li><router-link class="link" :to="{name:''}">Κρατησεις</router-link></li>
       <li><router-link class="link" :to="{name:''}">Blog</router-link></li>
-      <li><router-link class="link" :to="{name:'CustomersComp'}">Πελατες</router-link></li>
-      <li><router-link class="link" :to="{name:'TestComp'}">Test</router-link></li>
-      <li><router-link class="link" :to="{name:'LoginComp'}">Login</router-link></li>
-      <li><a v-if="auth.state.status.loggedIn" class="link" @click.prevent="logOut">LogOut</a></li>
+      <li v-if="auth.state.role == 'user'"><router-link class="link" :to="{name:''}">Κρατησεις</router-link></li>
+      <li v-if="auth.state.role == 'user'"><router-link class="link" :to="{name:'TestComp'}">Test</router-link></li>
+      <li v-if="auth.state.role == 'admin'"><router-link class="link" :to="{name:'CustomersComp'}">Πελατες</router-link></li>
+      <li v-if="!auth.state.status.loggedIn"><router-link class="link" :to="{name:'LoginComp'}">Login</router-link></li>
+      <li v-if="auth.state.status.loggedIn"><a class="link" @click.prevent="logOut">LogOut</a></li>
     </ul>
     <div class="icon">
       <i @click="toggleMobileNav" v-show="mobile" class="far fa-bars" :class="{'icon-active' : mobileNav}"></i>

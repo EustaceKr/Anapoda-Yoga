@@ -22,20 +22,23 @@ export const auth = {
     logout({ commit }) {
       AuthService.logout();
       commit('logout');
-    }
+          }
   },
   mutations: {
     loginSuccess(state, user) {
       state.status.loggedIn = true;
       state.user = user;
+      state.role = localStorage.role;
     },
     loginFailure(state) {
       state.status.loggedIn = false;
       state.user = null;
+      state.role = localStorage.role;
     },
     logout(state) {
       state.status.loggedIn = false;
       state.user = null;
+      state.role = localStorage.role;
     }
   }
 };

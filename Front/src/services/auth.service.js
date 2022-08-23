@@ -11,6 +11,8 @@ class AuthService {
         if (response.data.token) {
           localStorage.setItem('token', JSON.stringify(response.data.token));
           localStorage.setItem('role', JSON.stringify(response.data.userRole))
+          if (localStorage.role == '["User"]') localStorage.role = 'user'
+          if (localStorage.role == '["Admin"]') localStorage.role = 'admin'
         }
         return response.data.token
       });
@@ -18,6 +20,6 @@ class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
-  }
+    }
 }
 export default new AuthService();

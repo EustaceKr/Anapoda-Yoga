@@ -73,8 +73,8 @@ export default {
       this.loading = true;
       this.$store.dispatch("auth/login", user).then(
         () => {
-            if(localStorage.getItem('role') == '["User"]') this.$router.push({name: "TestComp"});
-            else if (localStorage.getItem('role') == '["Admin"]') this.$router.push({name: "CustomersComp"})
+            if(localStorage.getItem('role') == 'user') this.$router.push({name: "TestComp"});
+            else if (localStorage.getItem('role') == 'admin') this.$router.push({name: "CustomersComp"})
         },
         (error) => {
           this.loading = false;
