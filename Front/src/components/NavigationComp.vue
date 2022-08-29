@@ -2,28 +2,32 @@
   <header :class="{'scrolled-nav': scrolledNav }">
   <nav>
     <div class="branding">
-      <img src="@/assets/logo.png" alt="">
+      <img src="@/assets/logo.jpg" alt="">
     </div>
     <ul v-show="!mobile" class="navigation">
       <li><router-link class="link" :to="{name:'HomeComp'}">Αρχικη</router-link></li>
       <li><router-link class="link" :to="{name:'AboutComp'}">Σχετικα με μας</router-link></li>
       <li><router-link class="link" :to="{name:''}">Blog</router-link></li>
-      <li v-if="auth.state.role == 'user'"><router-link class="link" :to="{name:''}">Κρατησεις</router-link></li>
+      <li v-if="auth.state.role == 'user'"><router-link class="link" :to="{name:'ReservationComp'}">Κρατησεις</router-link></li>
       <li v-if="auth.state.role == 'user'"><router-link class="link" :to="{name:'TestComp'}">Test</router-link></li>
       <li v-if="auth.state.role == 'admin'"><router-link class="link" :to="{name:'CustomersComp'}">Πελατες</router-link></li>
-      <li v-if="!auth.state.status.loggedIn"><router-link class="link" :to="{name:'LoginComp'}">Login</router-link></li>
-      <li v-if="auth.state.status.loggedIn"><a class="link" @click.prevent="logOut">LogOut</a></li>
+      <li v-if="auth.state.role == 'admin'"><router-link class="link" :to="{name:'YogaClassTypeComp'}">Μαθήματα</router-link></li>
+      <li v-if="!auth.state.status.loggedIn"><router-link class="link" :to="{name:'LoginComp'}">Σύνδεση</router-link></li>
+      <li v-if="auth.state.status.loggedIn"><a class="link" @click.prevent="logOut">Αποσυνδεση</a></li>
     </ul>
     <div class="icon">
       <i @click="toggleMobileNav" v-show="mobile" class="far fa-bars" :class="{'icon-active' : mobileNav}"></i>
     </div>
     <transition name="mobile-nav">
-      <ul v-show="mobileNav" class="dropdown-nav">
+    <ul v-show="mobileNav" class="dropdown-nav">
       <li><router-link class="link" :to="{name:'HomeComp'}">Αρχικη</router-link></li>
       <li><router-link class="link" :to="{name:'AboutComp'}">Σχετικα με μας</router-link></li>
-      <li><router-link class="link" :to="{name:''}">Κρατησεις</router-link></li>
       <li><router-link class="link" :to="{name:''}">Blog</router-link></li>
-      <li><router-link class="link" :to="{name:'CustomersComp'}">Πελάτες</router-link></li>
+      <li v-if="auth.state.role == 'user'"><router-link class="link" :to="{name:'ReservationComp'}">Κρατησεις</router-link></li>
+      <li v-if="auth.state.role == 'user'"><router-link class="link" :to="{name:'TestComp'}">Test</router-link></li>
+      <li v-if="auth.state.role == 'admin'"><router-link class="link" :to="{name:'CustomersComp'}">Πελατες</router-link></li>
+      <li v-if="!auth.state.status.loggedIn"><router-link class="link" :to="{name:'LoginComp'}">Συνδεση</router-link></li>
+      <li v-if="auth.state.status.loggedIn"><a class="link" @click.prevent="logOut">Αποσυνδεση</a></li>
     </ul>
     </transition>
   </nav>
@@ -85,7 +89,7 @@ export default {
 
 <style lang="scss" scoped>
 header {
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(40, 122, 136, 0.8);
   z-index: 99;
   width: 100%;
   position: fixed;
@@ -93,7 +97,7 @@ header {
   color: #fff;
 }
 .scrolled-nav{
-    background-color: #000;
+    background-color: rgba(13, 70, 80, 0.8);
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
 
     nav{

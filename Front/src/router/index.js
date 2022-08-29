@@ -4,6 +4,8 @@ import AboutComp from "../views/AboutComp.vue";
 import CustomersComp from "../views/CustomersComp.vue";
 import LoginComp from "../views/LoginComp.vue"
 import TestComp from "../views/TestComp.vue"
+import ReservationComp from "../views/ReservationComp.vue"
+import YogaClassTypeComp from "../views/YogaClassTypeComp.vue"
 
 
 const routes = [
@@ -31,6 +33,16 @@ const routes = [
     path: "/",
     name: "TestComp",
     component: TestComp
+  },
+  {
+    path: "/",
+    name: "ReservationComp",
+    component: ReservationComp
+  },
+  {
+    path: "/",
+    name: "YogaClassTypeComp",
+    component: YogaClassTypeComp
   }
 ];
 

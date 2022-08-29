@@ -1,4 +1,8 @@
 <template>
+  <br/>
+<br/>
+<br/>
+<br/>
   <div class="home">
     <section class="hero">
       <div class="hero-text container">
