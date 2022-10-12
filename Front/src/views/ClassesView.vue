@@ -1,6 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia';
-import { useClassesStore } from '@/stores';
+import { useClassesStore,useClassTypesStore } from '@/stores';
 //import Modal from '../components/Modal.vue'
 //import { ref } from 'vue'
 //import { Form, Field } from 'vee-validate';
@@ -9,12 +9,20 @@ import { useClassesStore } from '@/stores';
 const classesStore = useClassesStore();
 const { yogaClasses  } = storeToRefs(classesStore);
 classesStore.getAll();
-console.log()
+
+const classTypesStore = useClassTypesStore();
+const { classTypes } = storeToRefs(classTypesStore);
+classTypesStore.getAll();
+
+function getYogaClassTypeName(id){
+    console.log(classTypes.value);
+    return classTypes.value.find(x => x.yogaClassTypeId == id).name;
+}
 </script>
 <template>
     <div>
         <ul v-if="yogaClasses.length">
-            <li v-for="yogaClass in yogaClasses" :key="yogaClass.yogaClassId">{{yogaClass.yogaClassId}}</li>
+            <li v-for="yogaClass in yogaClasses" :key="yogaClass.yogaClassId">{{getYogaClassTypeName(yogaClass.yogaClassTypeId)}}</li>
         </ul>
     </div>
 </template>
