@@ -3,29 +3,29 @@ import { fetchWrapper } from '@/helpers';
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
-export const useClassTypesStore = defineStore({
+export const useClassesStore = defineStore({
     id: 'classes',
     state: () => ({
-        classes: {}
+        yogaClasses: {}
     }),
     actions: {
         async getAll() {
-            this.classes = { loading: true };
-            var result = await fetchWrapper.get(`${baseUrl}/yogaclasstypes`)
-            this.classTypes = result.body
+            this.yogaClasses = { loading: true };
+            var result = await fetchWrapper.get(`${baseUrl}/yogaclasses`)
+            this.yogaClasses = result.body
         },
-        async saveClassType(name, description,capacity,duration) {
-            var result =  await fetchWrapper.post(`${baseUrl}/yogaclasstypes`, {name, description,capacity,duration})
+        async saveClassType(yogaClassTypeId, date) {
+            var result =  await fetchWrapper.post(`${baseUrl}/yogaclasses`, {yogaClassTypeId, date})
             await this.getAll();
             return result.status
         },
-        async editClassType(id,name,description,capacity,duration){
-            var result = await fetchWrapper.put(`${baseUrl}/yogaclasstypes/${id}`, {name, description,capacity,duration})
+        async editClassType(id,yogaClassTypeId, date){
+            var result = await fetchWrapper.put(`${baseUrl}/yogaclasses/${id}`, {yogaClassTypeId, date})
             await this.getAll();
             return result.status
         },
         async deleteClassType(id){
-            var result =  await fetchWrapper.delete(`${baseUrl}/yogaclasstypes/${id}`)
+            var result =  await fetchWrapper.delete(`${baseUrl}/yogaclasses/${id}`)
             await this.getAll();
             return result.status
         }

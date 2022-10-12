@@ -9,6 +9,7 @@ namespace Application.Services.YogaClassImplementation
 {
     public interface IYogaClassService
     {
+        Task<IEnumerable<YogaClass>> GetAllYogaClasses();
         Task<IEnumerable<YogaClass>> GetYogaClassesByDate(DateTime time);
         Task<YogaClass> GetYogaClass(string id);
         void CreateYogaClass(YogaClass yogaClass);

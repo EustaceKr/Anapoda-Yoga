@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.YogaClassDTOs;
+using Application.DTOs.YogaClassTypeDTOs;
 using Application.Services.YogaClassImplementation;
 using Application.UserAuthentication;
 using AutoMapper;
@@ -20,15 +21,24 @@ namespace Web.Controllers
             _mapper = mapper;
         }
 
-        //GET api/yogaclasses/
+
+        //GET api/yogaclasses
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<YogaClassReadDTO>>> GetAllYogaClasses()
+        {
+            var yogaClasses = await _service.GetAllYogaClasses();
+            return Ok(_mapper.Map<IEnumerable<YogaClassReadDTO>>(yogaClasses));
+        }
+
+        //GET api/yogaclasses/{time}
         [HttpGet("{time}")]
-        public async Task<ActionResult<IEnumerable<YogaClassReadDTO>>> GetAllYogaClasses(DateTime time)
+        public async Task<ActionResult<IEnumerable<YogaClassReadDTO>>> GetYogaClassesByTime(DateTime time)
         {
             var yogaClasses = await _service.GetYogaClassesByDate(time);
             return Ok(_mapper.Map<IEnumerable<YogaClassReadDTO>>(yogaClasses));
         }
 
-        //GET api/yogaclass/{time}/{id}
+        //GET api/yogaclass/{id}
         [HttpGet("{id:Guid}", Name = "GetYogaClassById")]
         public async Task<ActionResult<YogaClassReadDTO>> GetYogaClassById(string id)
         {

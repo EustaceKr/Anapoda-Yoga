@@ -57,5 +57,10 @@ namespace Application.Services.YogaClassImplementation
                 return false;
             }
         }
+
+        public async Task<IEnumerable<YogaClass>> GetAllYogaClasses()
+        {
+            return await _repository.GetAllYogaClassesAsync();
+        }
     }
 }
