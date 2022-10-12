@@ -1,36 +1,27 @@
-<template>
-  <div class="app">
-    <NavigationComp/>
-    <router-view />
-  </div>
-</template>
-
-<script>
-import NavigationComp from './components/NavigationComp.vue';
-export default {
-    name: "App",
-    components: { NavigationComp }
-};
-</script>
-
-<style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;500&display=swap");
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: "Raleway", sans-serif;
-  font-weight: 400;
-}
-
-.app {
-  min-height: 100vh;
-  position: relative;
-  background-color: #f1f1f1;
-}
-.container {
-  padding: 0 20px;
-  max-width: 1140px;
-  margin: 0 auto;
-}
-</style>
+<script setup>
+  import { RouterLink, RouterView } from 'vue-router';
+  import { useAuthStore } from '@/stores';
+  
+  const authStore = useAuthStore();
+  </script>
+  
+  <template>
+      <div class="app-container bg-light">
+          <nav class="navbar navbar-expand navbar-dark bg-dark">
+              <div class="navbar-nav">
+                  <RouterLink to="/" class="nav-item nav-link">Home</RouterLink>
+                  <RouterLink v-if="authStore.checkIfAdmin()" to="/classtypes" class="nav-item nav-link" >Class Types</RouterLink>
+                  <RouterLink v-if="authStore.checkIfAdmin()" to="/classes" class="nav-item nav-link" >Classes</RouterLink>
+                  <RouterLink v-if="!authStore.user" to="/login" class="nav-item nav-link">Login</RouterLink>
+                  <a v-if="authStore.user" @click="authStore.logout()" class="nav-item nav-link">Logout</a>
+              </div>
+          </nav>
+          <div class="container pt-4 pb-4">
+              <RouterView />
+          </div>
+      </div>
+  </template>
+  
+  <style>
+  @import '@/assets/base.css';
+  </style>
