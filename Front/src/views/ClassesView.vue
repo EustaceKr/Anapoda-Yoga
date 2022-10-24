@@ -18,6 +18,16 @@ function getYogaClassTypeName(id){
     return classTypes.value.find(x => x.yogaClassTypeId == id).name;
 }
 
+function getYogaClassDate(datetime){
+    var date = new Date(datetime)
+    return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
+}
+
+function getYogaClassTime(datetime){
+    var date = new Date(datetime)
+    return date.getHours() + ':' + date.getMinutes()
+}
+
 function showModal(){
     modal.value.show();
 }
@@ -40,14 +50,29 @@ const onSubmit = async(values, { setErrors }) => {
 
 </script>
 <template>
-    <div>
-        <ul v-if="yogaClasses.length">
-            <li v-for="yogaClass in yogaClasses" :key="yogaClass.yogaClassId">{{getYogaClassTypeName(yogaClass.yogaClassTypeId)}}</li>
-        </ul>
-    </div>
-    <div>
+     <div>
         <button @click="showModal" class="btn btn-primary">Create a class</button>
     </div>
+    <table class="table" v-if="yogaClasses.length">
+        <thead>
+            <tr>
+                <th scope="col">Class Type Name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Reservations</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="yogaClass in yogaClasses" :key="yogaClass.yogaClassId">
+                <td>{{getYogaClassTypeName(yogaClass.yogaClassTypeId)}}</td>
+                <td>{{getYogaClassDate(yogaClass.date)}}</td>
+                <td>{{getYogaClassTime(yogaClass.date)}}</td>
+                <td>{{yogaClass.reservations.length}}</td>
+                <td><button @click.prevent="">Edit Reservations</button></td>
+            </tr>
+        </tbody>
+    </table>
     <Modal ref="modal" maxWidth="800px" width="300px">
         <template #header>
             <label class="col-form-label mb-2" style="font-size: 1.15em;">
@@ -57,7 +82,10 @@ const onSubmit = async(values, { setErrors }) => {
         <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors,isSubmitting }">
             <div class="form-group">
                 <label>Title</label>
-                <Field name="title" type="text" class="form-control" :class="{ 'is-invalid': errors.title }" />
+                <Field name="title" as="select" class="form-control" :class="{ 'is-invalid': errors.title }">
+                    <option value="">Select a class type</option>
+                    <option v-for="classType in classTypes" :value="classType.yogaClassTypeId" :key="classType.yogaClassTypeId">{{classType.name}}</option>
+                </Field>
                 <div class="invalid-feedback">{{errors.title}}</div>
             </div>
             <div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>

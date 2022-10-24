@@ -4,7 +4,7 @@ import { fetchWrapper } from '@/helpers';
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 export const useClassesStore = defineStore({
-    id: 'classes',
+    id: 'yogaclasses',
     state: () => ({
         yogaClasses: {}
     }),

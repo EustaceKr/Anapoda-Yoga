@@ -17,7 +17,7 @@ namespace Data.Repositories.CustomerDAO
         }
         public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
         {
-            return await FindAll().OrderBy(c => c.LastName).ToListAsync();
+            return await FindAll().Where(x => x.Id != "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d").OrderBy(c => c.LastName).ToListAsync();
         }
         public async Task<Customer> GetCustomerByIdAsync(string customerId)
         {

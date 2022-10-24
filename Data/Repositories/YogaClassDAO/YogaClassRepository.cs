@@ -18,7 +18,7 @@ namespace Data.Repositories.YogaClassDAO
 
         public async Task<IEnumerable<YogaClass>> GetAllYogaClassesAsync()
         {
-            return await FindAll().ToListAsync();
+            return await FindAll().OrderByDescending(x => x.Date).ToListAsync();
         }
 
         public async Task<IEnumerable<YogaClass>> GetAllYogaClassesByDateAsync(DateTime time)

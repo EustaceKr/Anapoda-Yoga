@@ -11,7 +11,8 @@
               <div class="navbar-nav">
                   <RouterLink to="/" class="nav-item nav-link">Home</RouterLink>
                   <RouterLink v-if="authStore.checkIfAdmin()" to="/classtypes" class="nav-item nav-link" >Class Types</RouterLink>
-                  <RouterLink v-if="authStore.checkIfAdmin()" to="/classes" class="nav-item nav-link" >Classes</RouterLink>
+                  <RouterLink v-if="authStore.checkIfAdmin()" to="/yogaclasses" class="nav-item nav-link" >Classes</RouterLink>
+                  <RouterLink v-if="authStore.checkIfAdmin()" to="/customers" class="nav-item nav-link" >Cutomers</RouterLink>
                   <RouterLink v-if="!authStore.user" to="/login" class="nav-item nav-link">Login</RouterLink>
                   <a v-if="authStore.user" @click="authStore.logout()" class="nav-item nav-link">Logout</a>
               </div>

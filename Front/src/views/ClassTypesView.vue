@@ -8,6 +8,8 @@ import * as Yup from 'yup';
 
 const classTypesStore = useClassTypesStore();
 const { classTypes } = storeToRefs(classTypesStore);
+classTypesStore.getAll();
+
 const modal = ref(null);
 const formValues = {
     id: null,
@@ -22,8 +24,6 @@ const schema = Yup.object().shape({
     capacity: Yup.string().required('Capacity is required'),
     duration: Yup.string().required('Duration is required')
 });
-
-classTypesStore.getAll();
 
 function showModal(id,name,description,duration,capacity = null) {
     if( id ){
