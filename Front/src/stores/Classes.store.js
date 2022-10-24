@@ -14,17 +14,17 @@ export const useClassesStore = defineStore({
             var result = await fetchWrapper.get(`${baseUrl}/yogaclasses`)
             this.yogaClasses = result.body
         },
-        async saveClassType(yogaClassTypeId, date) {
+        async saveClass(yogaClassTypeId, date) {
             var result =  await fetchWrapper.post(`${baseUrl}/yogaclasses`, {yogaClassTypeId, date})
             await this.getAll();
             return result.status
         },
-        async editClassType(id,yogaClassTypeId, date){
+        async editClass(id,yogaClassTypeId, date){
             var result = await fetchWrapper.put(`${baseUrl}/yogaclasses/${id}`, {yogaClassTypeId, date})
             await this.getAll();
             return result.status
         },
-        async deleteClassType(id){
+        async deleteClass(id){
             var result =  await fetchWrapper.delete(`${baseUrl}/yogaclasses/${id}`)
             await this.getAll();
             return result.status
