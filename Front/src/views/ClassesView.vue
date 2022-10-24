@@ -1,6 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia';
-import { useClassesStore,useClassTypesStore } from '@/stores';
+import { useClassesStore,useClassTypesStore,useReservationsStore } from '@/stores';
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
 import Modal from '../components/Modal.vue'
@@ -13,6 +13,9 @@ classesStore.getAll();
 const classTypesStore = useClassTypesStore();
 const { classTypes } = storeToRefs(classTypesStore);
 classTypesStore.getAll();
+
+const reservationsStore = useReservationsStore();
+const { reservations } = storeToRefs(reservationsStore);
 
 function getYogaClassTypeName(id){
     return classTypes.value.find(x => x.yogaClassTypeId == id).name;
@@ -48,6 +51,11 @@ const onSubmit = async(values, { setErrors }) => {
     }
 }
 
+function reserve(yogaClassId){
+    return reservationsStore.saveReservation(yogaClassId)
+        .then(classesStore.getAll())
+        .catch(error => setErrors({ apiError: error }));
+}
 
 </script>
 <template>
@@ -70,7 +78,7 @@ const onSubmit = async(values, { setErrors }) => {
                 <td>{{getYogaClassDate(yogaClass.date)}}</td>
                 <td>{{getYogaClassTime(yogaClass.date)}}</td>
                 <td>{{yogaClass.reservations.length}}</td>
-                <td><button @click.prevent="">Edit Reservations</button></td>
+                <td><button @click.prevent="reserve(yogaClass.yogaClassId)">Edit Reservations</button></td>
             </tr>
         </tbody>
     </table>

@@ -5,7 +5,6 @@ import Modal from '../components/Modal.vue'
 import { ref } from 'vue'
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
-import { last } from 'lodash';
 
 const customersStore = useCustomersStore();
 const { customers } = storeToRefs(customersStore);
