@@ -5,6 +5,7 @@ import Modal from '../components/Modal.vue'
 import { ref } from 'vue'
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
+import { last } from 'lodash';
 
 const customersStore = useCustomersStore();
 const { customers } = storeToRefs(customersStore);
@@ -17,7 +18,8 @@ function getDate(datetime){
     else return null
 }
 
-const modalCreate = ref(null);
+const modal = ref(null);
+
 const formValues = {
     id: null,
     firstName: '',
@@ -33,25 +35,50 @@ const schema = Yup.object().shape({
     password: Yup.string().required('Password is required')
 });
 
-function showCreateModal(){
-    modalCreate.value.show();
+const isCreate = ref(true);
+
+function showModal(id, firstName, lastName){
+    if(id){
+        formValues.id = id;
+        formValues.firstName = firstName;
+        formValues.lastName = lastName;
+        formValues.username = 'NoNeedForUserName'
+        formValues.password = 'NoNeedForPassword'
+        isCreate.value = false;
+        modal.value.show();
+    }else{
+        formValues.id = null;
+        formValues.firstName = '';
+        formValues.lastName = '';
+        isCreate.value = true;
+        modal.value.show();
+    }
 }
 
+
 const onSubmit = async(values, { setErrors }) => {
-    const { id, firstName, lastName, username, password } = values;
-    modalCreate.value.hide();
+    const { id,firstName, lastName, username, password } = values;
+    modal.value.hide();
     if(id){
+        formValues.username = '';
+        formValues.password = '';
         return customersStore.editCustomer(id, firstName, lastName)
             .catch(error => setErrors({ apiError: error }));
     }else{
         return customersStore.saveCustomer(firstName, lastName, username, password)
             .catch(error => setErrors({ apiError: error }));
     }
+       
+    
+}
+
+const deleteCustomer = async (id) => {
+    await customersStore.deleteCustomer(id)
 }
 
 </script>
 <template>
-    <button @click="showCreateModal()">Add new customer</button>
+    <button @click="showModal(null,null,null)">Add Customer</button>
     <table class="table" v-if="customers.length">
         <thead>
             <tr>
@@ -69,18 +96,23 @@ const onSubmit = async(values, { setErrors }) => {
                 <td>{{customer.lastName}}</td>
                 <td>{{getDate(customer.createdDate)}}</td>
                 <td>{{getDate(customer.updatedDate)}}</td>
-                <!-- <td><button @click.prevent="deleteType(classType.yogaClassTypeId)">Delete</button></td> -->
-                <!-- <td><button @click.prevent="showModal(classType.yogaClassTypeId,classType.name,classType.description,classType.duration,classType.capacity)">Edit</button></td> -->
+                <td><button @click.prevent="deleteCustomer(customer.id)">Delete</button></td>
+                <td><button @click.prevent="showModal(customer.id, customer.firstName, customer.lastName)">Edit</button></td>
             </tr>
         </tbody>
     </table>
-    <Modal ref="modalCreate" maxWidth="800px" width="300px">
-        <template #header>
+    <Modal ref="modal" maxWidth="800px" width="300px">
+        <template #header v-if="isCreate">
             <label class="col-form-label mb-2" style="font-size: 1.15em;">
                 Create Customer
             </label>
         </template>
-        <Form @submit="onSubmit" :validation-schema="schema" :initial-values="formValues" v-slot="{ errors,isSubmitting }">
+        <template #header v-else>
+            <label class="col-form-label mb-2" style="font-size: 1.15em;">
+                Edit Customer
+            </label>
+        </template>
+        <Form @submit="onSubmit" :validation-schema="schema" :initial-values="formValues" v-slot="{ errors,isSubmitting } ">
             <div class="form-group">
                 <label>First Name</label>
                 <Field name="firstName" type="text" class="form-control" :class="{ 'is-invalid': errors.firstName }" />
@@ -92,12 +124,12 @@ const onSubmit = async(values, { setErrors }) => {
                     :class="{ 'is-invalid': errors.lastName }" />
                 <div class="invalid-feedback">{{errors.lastName}}</div>
             </div>
-            <div class="form-group">
+            <div class="form-group" v-show="isCreate">
                 <label>Username</label>
                 <Field name="username" type="text" class="form-control" :class="{ 'is-invalid': errors.username }" />
                 <div class="invalid-feedback">{{errors.username}}</div>
             </div>
-            <div class="form-group">
+            <div class="form-group" v-show="isCreate">
                 <label>Password</label>
                 <Field name="password" type="text" class="form-control" :class="{ 'is-invalid': errors.password }" />
                 <div class="invalid-feedback">{{errors.password}}</div>

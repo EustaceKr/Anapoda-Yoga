@@ -19,12 +19,12 @@ export const useCustomersStore = defineStore({
             await this.getAll();
             return result.status
         },
-        async editClassType(id, firstName, lastName){
+        async editCustomer(id, firstName, lastName){
             var result = await fetchWrapper.put(`${baseUrl}/customers/${id}`, {firstName, lastName})
             await this.getAll();
             return result.status
         },
-        async deleteClassType(id){
+        async deleteCustomer(id){
             var result =  await fetchWrapper.delete(`${baseUrl}/customers/${id}`)
             await this.getAll();
             return result.status
