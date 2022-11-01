@@ -57,5 +57,23 @@ namespace Web.Controllers
             }
             return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Reservation creation failed! Please check the details and try again." });
         }
+
+        [HttpPost("admin")]
+        public async Task<ActionResult<ReservationReadDTO>> AdminCreateReservation(ReservationAdminCreateDTO reservationAdminCreateDto)
+        {
+            var reservationModel = _mapper.Map<Reservation>(reservationAdminCreateDto);
+            reservationModel.CreatedAt = DateTime.Now;
+
+            var user = await _customerService.GetCustomer(reservationModel.CustomerId);
+            if (await _service.CheckReservation(reservationModel, user))
+            {
+                _service.CreateReservation(reservationModel);
+                if (await _service.Complete())
+                {
+                    return Ok();
+                }
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Reservation creation failed! Please check the details and try again." });
+        }
     }
 }

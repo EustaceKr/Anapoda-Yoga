@@ -15,6 +15,7 @@ namespace Application.Profiles
         {
             CreateMap<Reservation, ReservationReadDTO>();
             CreateMap<ReservationCreateDTO, Reservation>();
+            CreateMap<ReservationAdminCreateDTO, Reservation>();
         }
     }
 }
