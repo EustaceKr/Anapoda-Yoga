@@ -10,7 +10,7 @@ export const useCustomersStore = defineStore({
     }),
     actions: {
         async getAll() {
-            this.customters = { loading: true };
+            this.customers = { loading: true };
             var result = await fetchWrapper.get(`${baseUrl}/customers`)
             this.customers = result.body
         },
@@ -27,6 +27,18 @@ export const useCustomersStore = defineStore({
         async deleteCustomer(id){
             var result =  await fetchWrapper.delete(`${baseUrl}/customers/${id}`)
             await this.getAll();
+            return result.status
+        },
+        async getInYogaClass(yogaClassId) {
+            this.customers = {loading: true};
+            var result = await fetchWrapper.get(`${baseUrl}/customers/inYogaClass/${yogaClassId}`)
+            this.customers = result.body
+            return result.status
+        },
+        async getNotInYogaClass(yogaClassId) {
+            this.customers = {loading: true};
+            var result = await fetchWrapper.get(`${baseUrl}/customers/notInYogaClass/${yogaClassId}`)
+            this.customers = result.body
             return result.status
         }
     }

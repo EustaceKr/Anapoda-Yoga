@@ -24,6 +24,14 @@ namespace Application.Services.CustomerImplementation
         {
             return await _repository.GetAllCustomersAsync();
         }
+        public async Task<IEnumerable<Customer>> GetCustomersNotInClass(string yogaClassId)
+        {
+            return await _repository.GetCustomersNotInClassAsync(yogaClassId);
+        }
+        public async Task<IEnumerable<Customer>> GetCustomersInClass(string yogaClassId)
+        {
+            return await _repository.GetCustomersNotInClassAsync(yogaClassId);
+        }
 
         public async Task<Customer> GetCustomer(string id)
         {

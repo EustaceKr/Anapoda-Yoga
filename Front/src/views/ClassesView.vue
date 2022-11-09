@@ -22,6 +22,7 @@ const { customers } = storeToRefs(customersStore)
 customersStore.getAll();
 
 const reservationEdit = ref(false);
+const reservationAdd = ref(false);
 
 function getYogaClassTypeName(id) {
     return classTypes.value.find(x => x.yogaClassTypeId == id).name;
@@ -49,16 +50,16 @@ const formValues = {
     customer: null
 }
 
-function showModal(classId, title, date, isEdit) {
+function showModal(classId, title, date) {
 
-    if (date == null && !isEdit) {
+    if (date == null) {
         reservationEdit.value = false;
         formValues.title = null;
         formValues.date = null;
         formValues.time = null;
         formValues.customer = "NoNeedForCustomer";
         modal.value.show();
-    } else if (date != null && !isEdit) {
+    } else {
         reservationEdit.value = false;
         formValues.classId = classId;
         formValues.title = title;
@@ -66,14 +67,28 @@ function showModal(classId, title, date, isEdit) {
         formValues.customer = "NoNeedForCustomer";
         modal.value.show();
     }
-    else {
+}
+function showReservationsModal(classId, title, date, isAdd) {
+    if (isAdd) {
+        reservationAdd.value = true
         reservationEdit.value = true
+        customersStore.getNotInYogaClass(classId);
+        formValues.classId = classId;
+        formValues.title = title;
+        formValues.date = date;
+        formValues.customer = null;
+        modal.value.show();
+    } else {
+        reservationAdd.value = false
+        reservationEdit.value = true
+        customersStore.getInYogaClass(classId);
         formValues.classId = classId;
         formValues.title = title;
         formValues.date = date;
         formValues.customer = null;
         modal.value.show();
     }
+
 }
 
 
@@ -96,10 +111,9 @@ const onSubmit = async (values, { setErrors }) => {
                 .catch(error => setErrors({ apiError: error }));
         }
     } else if (reservationEdit) {
-        console.log(classId);
         var response = await reservationsStore.adminSaveReservation(classId, customer)
             .catch(error => setErrors({ apiError: error }));
-        if(response == 200) classesStore.getAll();
+        if (response == 200) classesStore.getAll();
     }
 
 }
@@ -108,15 +122,10 @@ const deleteYogaClass = async (id) => {
     await classesStore.deleteClass(id)
 }
 
-// function availableCustomers(classId){
-//     var customers = 
-//     return 
-// }
-
 </script>
 <template>
     <div>
-        <button @click="showModal(null, null, null, false)" class="btn btn-primary">Create a class</button>
+        <button @click="showModal(null, null, null)" class="btn btn-primary">Create a class</button>
     </div>
     <table class="table" v-if="yogaClasses.length">
         <thead>
@@ -136,11 +145,20 @@ const deleteYogaClass = async (id) => {
                 <td>{{ yogaClass.reservations.length }}</td>
                 <td><button @click.prevent="deleteYogaClass(yogaClass.yogaClassId)">Delete</button></td>
                 <td><button
-                        @click.prevent="showModal(yogaClass.yogaClassId, yogaClass.yogaClassTypeId, yogaClass.date, false)">Edit</button>
+                        @click.prevent="showModal(yogaClass.yogaClassId, yogaClass.yogaClassTypeId, yogaClass.date)">Edit</button>
                 </td>
-                <td><button
-                        @click.prevent="showModal(yogaClass.yogaClassId, getYogaClassTypeName(yogaClass.yogaClassTypeId), yogaClass.date, true)">Add
-                        Reservation</button></td>
+                <td>
+                    <button
+                        @click.prevent="showReservationsModal(yogaClass.yogaClassId, getYogaClassTypeName(yogaClass.yogaClassTypeId), yogaClass.date, true)">Add
+                        Reservation
+                    </button>
+                </td>
+                <td>
+                    <button
+                        @click.prevent="showReservationsModal(yogaClass.yogaClassId, getYogaClassTypeName(yogaClass.yogaClassTypeId), yogaClass.date, fase)">Cancel
+                        Reservation
+                    </button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -150,9 +168,14 @@ const deleteYogaClass = async (id) => {
                 Create Yoga Class
             </label>
         </template>
-        <template #header v-else>
+        <template #header v-else-if="reservationAdd">
             <label class="col-form-label mb-2" style="font-size: 1.15em;">
                 Add a reservation
+            </label>
+        </template>
+        <template #header v-else>
+            <label class="col-form-label mb-2" style="font-size: 1.15em;">
+                Cancel a reservation
             </label>
         </template>
         <Form @submit="onSubmit" :validation-schema="schema" :initial-values="formValues"
@@ -176,7 +199,8 @@ const deleteYogaClass = async (id) => {
                     {{ formValues.title }} - {{ formValues.date }} - {{ formValues.time }}
                 </div>
                 <div class="form-group">
-                    <label>Add a customer</label>
+                    <label v-if="reservationAdd">Add a customer</label>
+                    <label v-else>Remove a customer</label>
                     <Field name="customer" as="select" class="form-control" :class="{ 'is-invalid': errors.title }">
                         <option value="">Select a customer</option>
                         <option v-for="customer in customers" :value="customer.id" :key="customer.id">
