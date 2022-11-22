@@ -51,7 +51,6 @@ const formValues = {
 }
 
 function showModal(classId, title, date) {
-
     if (date == null) {
         reservationEdit.value = false;
         formValues.title = null;
@@ -111,9 +110,16 @@ const onSubmit = async (values, { setErrors }) => {
                 .catch(error => setErrors({ apiError: error }));
         }
     } else if (reservationEdit) {
-        var response = await reservationsStore.adminSaveReservation(classId, customer)
-            .catch(error => setErrors({ apiError: error }));
-        if (response == 200) classesStore.getAll();
+        if (reservationAdd.value) {
+            var response = await reservationsStore.adminSaveReservation(classId, customer)
+                .catch(error => setErrors({ apiError: error }));
+            if (response == 200) classesStore.getAll();
+        }else if (!reservationAdd.value){
+            var response = await reservationsStore.adminDeleteReservation(classId, customer)
+                .catch(error => setErrors({ apiError: error }));
+            if (response == 200) classesStore.getAll();
+        }
+
     }
 
 }
@@ -155,7 +161,7 @@ const deleteYogaClass = async (id) => {
                 </td>
                 <td>
                     <button
-                        @click.prevent="showReservationsModal(yogaClass.yogaClassId, getYogaClassTypeName(yogaClass.yogaClassTypeId), yogaClass.date, fase)">Cancel
+                        @click.prevent="showReservationsModal(yogaClass.yogaClassId, getYogaClassTypeName(yogaClass.yogaClassTypeId), yogaClass.date, false)">Cancel
                         Reservation
                     </button>
                 </td>

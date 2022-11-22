@@ -24,6 +24,11 @@ namespace Application.Services.ReservationImplementation
             return await _repository.GetAllReservationsByUserAsync(userId);
         }
 
+        public async Task<Reservation> GetReservationByClassAndCustomer(string customerId, string yogaClassId)
+        {
+            return await _repository.GetReservationByClassAndCustomer(customerId, yogaClassId);
+        }
+
         public void CreateReservation(Reservation reservation)
         {
             if (reservation == null) throw new ArgumentNullException(nameof(reservation));
@@ -47,6 +52,11 @@ namespace Application.Services.ReservationImplementation
             }
             return true;
 
+        }
+        public void DeleteReservation(Reservation reservation)
+        {
+            if (reservation == null) throw new ArgumentNullException(nameof(reservation));
+            _repository.Delete(reservation);
         }
 
         public async Task<bool> Complete()

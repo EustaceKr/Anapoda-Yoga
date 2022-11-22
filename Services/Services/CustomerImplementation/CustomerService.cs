@@ -30,7 +30,7 @@ namespace Application.Services.CustomerImplementation
         }
         public async Task<IEnumerable<Customer>> GetCustomersInClass(string yogaClassId)
         {
-            return await _repository.GetCustomersNotInClassAsync(yogaClassId);
+            return await _repository.GetCustomersInClassAsync(yogaClassId);
         }
 
         public async Task<Customer> GetCustomer(string id)

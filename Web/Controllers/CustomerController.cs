@@ -30,17 +30,17 @@ namespace Web.Controllers
             return Ok(_mapper.Map<IEnumerable<CustomerReadDTO>>(customers));
         }
 
-        [HttpGet("inYogaClass/{id:Guid}", Name = "GetCustomersInClass")]
-        public async Task<ActionResult<IEnumerable<CustomerReadDTO>>> GetCustomersInClass(string id)
+        [HttpGet("inYogaClass/{yogaClassId:Guid}", Name = "GetCustomersInClass")]
+        public async Task<ActionResult<IEnumerable<CustomerReadDTO>>> GetCustomersInClass(string yogaClassId)
         {
-            var customers = await _service.GetCustomersInClass(id);
+            var customers = await _service.GetCustomersInClass(yogaClassId);
             if (customers != null) return Ok(_mapper.Map<IEnumerable<CustomerReadDTO>>(customers));
             return NotFound();
         }
-        [HttpGet("notInYogaClass/{id:Guid}", Name = "GetCustomersNotInClass")]
-        public async Task<ActionResult<IEnumerable<CustomerReadDTO>>> GetCustomersNotInClass(string id)
+        [HttpGet("notInYogaClass/{yogaClassId:Guid}", Name = "GetCustomersNotInClass")]
+        public async Task<ActionResult<IEnumerable<CustomerReadDTO>>> GetCustomersNotInClass(string yogaClassId)
         {
-            var customers = await _service.GetCustomersNotInClass(id);
+            var customers = await _service.GetCustomersNotInClass(yogaClassId);
             if (customers != null) return Ok(_mapper.Map<IEnumerable<CustomerReadDTO>>(customers));
             return NotFound();
         }

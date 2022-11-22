@@ -28,5 +28,10 @@ namespace Data.Repositories.ReservetionDAO
         {
             return await FindByCondition(reservation => reservation.YogaClassId == yogaClassId).ToListAsync();
         }
+
+        public async Task<Reservation> GetReservationByClassAndCustomer(string yogaClassId, string customerId)
+        {
+            return await FindByCondition(reservation => reservation.YogaClassId == yogaClassId).Where(reservation => reservation.CustomerId == customerId).FirstOrDefaultAsync();
+        }
     }
 }

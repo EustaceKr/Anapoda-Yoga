@@ -13,5 +13,6 @@ namespace Data.Repositories.ReservetionDAO
         Task<IEnumerable<Reservation>> GetAllReservationsByUserAsync(string userId);
         Task<Reservation> GetReservationByIdAsync(string customerId);
         Task<IEnumerable<Reservation>> GetReservationsFromYogaClass(string yogaClassId);
+        Task<Reservation> GetReservationByClassAndCustomer(string yogaClassId, string customerId);
     }
 }

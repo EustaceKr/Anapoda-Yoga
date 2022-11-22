@@ -20,7 +20,11 @@ export const useReservationsStore = defineStore({
         },
         async adminSaveReservation(yogaClassId,customerId){
             var result = await fetchWrapper.post(`${baseUrl}/reservations/admin`, {yogaClassId,customerId})
-            
+            return result.status
+        },
+        async adminDeleteReservation(yogaClassId,customerId){
+            debugger;
+            var result = await fetchWrapper.delete(`${baseUrl}/reservations/admin?yogaClassId=${yogaClassId}&customerId=${customerId}`)
             return result.status
         }
     }
