@@ -5,10 +5,11 @@ import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
 import Modal from '../components/Modal.vue'
 import { ref } from 'vue'
+import { toast } from 'vue3-toastify';
 
 const classesStore = useClassesStore();
 const { yogaClasses } = storeToRefs(classesStore);
-classesStore.getAll();
+classesStore.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
 
 const classTypesStore = useClassTypesStore();
 const { classTypes } = storeToRefs(classTypesStore);
@@ -23,14 +24,16 @@ customersStore.getAll();
 
 const reservationEdit = ref(false);
 const reservationAdd = ref(false);
+const selectedDate = ref(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
 
 function getYogaClassTypeName(id) {
-    return classTypes.value.find(x => x.yogaClassTypeId == id).name;
+    if(Array.isArray(classTypes.value)) return classTypes.value.find(x => x.yogaClassTypeId == id).name;
+    else return id
 }
 
 function getYogaClassDate(datetime) {
     var date = new Date(datetime)
-    return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
+    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
 }
 
 function getYogaClassTime(datetime) {
@@ -54,7 +57,7 @@ function showModal(classId, title, date) {
     if (date == null) {
         reservationEdit.value = false;
         formValues.title = null;
-        formValues.date = null;
+        formValues.date = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate() + 'T' + (new Date().getHours() + 1) + ':' + new Date().getMinutes() + ':00';
         formValues.time = null;
         formValues.customer = "NoNeedForCustomer";
         modal.value.show();
@@ -103,21 +106,33 @@ const onSubmit = async (values, { setErrors }) => {
     modal.value.hide();
     if (!reservationEdit.value) {
         if (classId) {
-            return classesStore.editClass(classId, title, date)
+            var response = await classesStore.editClass(classId, title, date, selectedDate.value)
                 .catch(error => setErrors({ apiError: error }));
+            if(response == 200) toast.success("Class successfully editted.",{posistion:toast.POSITION.TOP_RIGHT})
+            else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
         } else {
-            return classesStore.saveClass(title, date)
+            var response = await classesStore.saveClass(title, date, selectedDate.value)
                 .catch(error => setErrors({ apiError: error }));
+                if(response == 201) toast.success("Class successfully added.",{posistion:toast.POSITION.TOP_RIGHT})
+                else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
         }
     } else if (reservationEdit) {
         if (reservationAdd.value) {
             var response = await reservationsStore.adminSaveReservation(classId, customer)
                 .catch(error => setErrors({ apiError: error }));
-            if (response == 200) classesStore.getAll();
+            if (response == 200){
+                classesStore.getAllByDate(selectedDate.value);
+                toast.success("Reservation successfully added.",{posistion:toast.POSITION.TOP_RIGHT})
+            }
+            else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
         }else if (!reservationAdd.value){
             var response = await reservationsStore.adminDeleteReservation(classId, customer)
                 .catch(error => setErrors({ apiError: error }));
-            if (response == 200) classesStore.getAll();
+            if (response == 200){
+                classesStore.getAllByDate(selectedDate.value);
+                toast.warning("Reservation successfully cancelled.",{posistion:toast.POSITION.TOP_RIGHT})
+            }
+            else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
         }
 
     }
@@ -125,13 +140,22 @@ const onSubmit = async (values, { setErrors }) => {
 }
 
 const deleteYogaClass = async (id) => {
-    await classesStore.deleteClass(id)
+    var response = await classesStore.deleteClass(id, selectedDate.value)
+    if(response == 200) toast.warning("Class successfully deleted.",{posistion:toast.POSITION.TOP_RIGHT})
+    else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+}
+
+const GetClassesByDate = (date) => {
+    classesStore.getAllByDate(date);
 }
 
 </script>
 <template>
     <div>
         <button @click="showModal(null, null, null)" class="btn btn-primary">Create a class</button>
+    </div>
+    <div style=" margin: auto;width: 30%;padding: 10px;">
+        <input style="text-align:center; margin:auto;" type="date" v-model="selectedDate" @change="GetClassesByDate(selectedDate)"/>
     </div>
     <table class="table" v-if="yogaClasses.length">
         <thead>
@@ -197,7 +221,7 @@ const deleteYogaClass = async (id) => {
             </div>
             <div class="form-group" v-show="!reservationEdit">
                 <label>Date</label>
-                <Field name="date" type="datetime-local" class="form-control" :class="{ 'is-invalid': errors.date }" />
+                <Field name="date" type="datetime-local" class="form-control"  :class="{ 'is-invalid': errors.date }" />
                 <div class="invalid-feedback">{{ errors.date }}</div>
             </div>
             <div v-show="reservationEdit">

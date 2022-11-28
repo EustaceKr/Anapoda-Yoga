@@ -13,6 +13,7 @@
     "vee-validate": "^4.6.10",
     "vue": "^3.2.38",
     "vue-router": "^4.1.5",
+    "vue3-toastify": "^0.0.3",
     "yup": "^0.32.11"
   },
   "devDependencies": {

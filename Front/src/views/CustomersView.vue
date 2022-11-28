@@ -5,6 +5,8 @@ import Modal from '../components/Modal.vue'
 import { ref } from 'vue'
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const customersStore = useCustomersStore();
 const { customers } = storeToRefs(customersStore);
@@ -61,18 +63,23 @@ const onSubmit = async(values, { setErrors }) => {
     if(id){
         formValues.username = '';
         formValues.password = '';
-        return customersStore.editCustomer(id, firstName, lastName)
+        var response = await customersStore.editCustomer(id, firstName, lastName)
             .catch(error => setErrors({ apiError: error }));
+        if (response == 200 ) toast.success("Customer successfully editted.",{posistion:toast.POSITION.TOP_RIGHT})
+        else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
     }else{
-        return customersStore.saveCustomer(firstName, lastName, username, password)
+        var response = await customersStore.saveCustomer(firstName, lastName, username, password)
             .catch(error => setErrors({ apiError: error }));
+        if (response == 201) toast.success("Customer successfully added.",{posistion:toast.POSITION.TOP_RIGHT})
+        else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
     }
-       
-    
 }
 
 const deleteCustomer = async (id) => {
-    await customersStore.deleteCustomer(id)
+    var response = await customersStore.deleteCustomer(id)
+        .catch(error => setErrors({ apiError: error }));
+    if (response == 200 ) toast.warning("Customer successfully deleted.",{posistion:toast.POSITION.TOP_RIGHT})
+    else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
 }
 
 </script>

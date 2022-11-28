@@ -5,6 +5,8 @@ import Modal from '../components/Modal.vue'
 import { ref } from 'vue'
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const classTypesStore = useClassTypesStore();
 const { classTypes } = storeToRefs(classTypesStore);
@@ -46,16 +48,23 @@ const onSubmit = async(values, { setErrors }) => {
     const { id,name, description, capacity, duration } = values;
     modal.value.hide();
     if(id){
-        return classTypesStore.editClassType(id,name, description, capacity, duration)
+        var response = await classTypesStore.editClassType(id,name, description, capacity, duration)
             .catch(error => setErrors({ apiError: error }));
+        if (response == 200) toast.success("Class Type successfully edited.",{posistion:toast.POSITION.TOP_RIGHT})
+        else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
     }else{
-        return classTypesStore.saveClassType(name, description, capacity, duration)
+        var response = await classTypesStore.saveClassType(name, description, capacity, duration)
             .catch(error => setErrors({ apiError: error }));
+        if (response == 201) toast.success("Class Type successfully added.",{posistion:toast.POSITION.TOP_RIGHT})
+        else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
     }
 }
 
 const deleteType = async (id) => {
-    await classTypesStore.deleteClassType(id)
+    var response = await classTypesStore.deleteClassType(id)
+        .catch(error => setErrors({ apiError: error }));
+    if (response == 200) toast.warning("Class Type successfully deleted.",{posistion:toast.POSITION.TOP_RIGHT})
+    else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
 }
 
 </script>
