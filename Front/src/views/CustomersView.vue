@@ -10,17 +10,7 @@ import 'vue3-toastify/dist/index.css';
 
 const customersStore = useCustomersStore();
 const { customers } = storeToRefs(customersStore);
-customersStore.getAll();
-
-function getDate(datetime){
-    var date = new Date(datetime)
-    if(date != 'Mon Jan 01 0001 00:00:00 GMT+0134 (Eastern European Standard Time)')
-        return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
-    else return null
-}
-
 const modal = ref(null);
-
 const formValues = {
     id: null,
     firstName: '',
@@ -28,15 +18,20 @@ const formValues = {
     username:'',
     password: '',
 }
-
 const schema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last Name is required'),
     username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required')
 });
-
 const isCreate = ref(true);
+
+function getDate(datetime){
+    var date = new Date(datetime)
+    if(date != 'Mon Jan 01 0001 00:00:00 GMT+0134 (Eastern European Standard Time)')
+        return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
+    else return null
+}
 
 function showModal(id, firstName, lastName){
     if(id){
@@ -55,7 +50,6 @@ function showModal(id, firstName, lastName){
         modal.value.show();
     }
 }
-
 
 const onSubmit = async(values, { setErrors }) => {
     const { id,firstName, lastName, username, password } = values;
@@ -82,6 +76,8 @@ const deleteCustomer = async (id) => {
     else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
 }
 
+
+customersStore.getAll();
 </script>
 <template>
     <button @click="showModal(null,null,null)">Add Customer</button>

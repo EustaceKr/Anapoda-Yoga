@@ -10,8 +10,6 @@ import 'vue3-toastify/dist/index.css';
 
 const classTypesStore = useClassTypesStore();
 const { classTypes } = storeToRefs(classTypesStore);
-classTypesStore.getAll();
-
 const modal = ref(null);
 const formValues = {
     id: null,
@@ -67,6 +65,8 @@ const deleteType = async (id) => {
     else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
 }
 
+//Services initialization
+classTypesStore.getAll();
 </script>
 <template>
     <button @click="showModal()">Add new class type</button>

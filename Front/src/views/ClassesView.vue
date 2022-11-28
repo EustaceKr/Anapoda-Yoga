@@ -9,25 +9,32 @@ import { toast } from 'vue3-toastify';
 
 const classesStore = useClassesStore();
 const { yogaClasses } = storeToRefs(classesStore);
-classesStore.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
-
 const classTypesStore = useClassTypesStore();
 const { classTypes } = storeToRefs(classTypesStore);
-classTypesStore.getAll();
-
 const reservationsStore = useReservationsStore();
-const { reservations } = storeToRefs(reservationsStore);
-
+//const { reservations } = storeToRefs(reservationsStore);
 const customersStore = useCustomersStore();
 const { customers } = storeToRefs(customersStore)
-customersStore.getAll();
-
 const reservationEdit = ref(false);
 const reservationAdd = ref(false);
 const selectedDate = ref(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
+const formValues = {
+    classId: null,
+    title: null,
+    customer: null,
+    date: null,
+    customer: null
+}
+const modal = ref(null);
+const schema = Yup.object().shape({
+    title: Yup.string().required('Title is required'),
+    date: Yup.date().min(new Date()),
+    customer: Yup.string().required('Customer is required')
+});
 
+//Helpers -Start
 function getYogaClassTypeName(id) {
-    if(Array.isArray(classTypes.value)) return classTypes.value.find(x => x.yogaClassTypeId == id).name;
+if(Array.isArray(classTypes.value)) return classTypes.value.find(x => x.yogaClassTypeId == id).name;
     else return id
 }
 
@@ -44,15 +51,12 @@ function getYogaClassTime(datetime) {
     });
     return enGB;
 }
-
-const formValues = {
-    classId: null,
-    title: null,
-    customer: null,
-    date: null,
-    customer: null
+const GetClassesByDate = (date) => {
+    classesStore.getAllByDate(date);
 }
+//Helpers - End
 
+//Modals - Start
 function showModal(classId, title, date) {
     if (date == null) {
         reservationEdit.value = false;
@@ -70,6 +74,7 @@ function showModal(classId, title, date) {
         modal.value.show();
     }
 }
+
 function showReservationsModal(classId, title, date, isAdd) {
     if (isAdd) {
         reservationAdd.value = true
@@ -92,15 +97,9 @@ function showReservationsModal(classId, title, date, isAdd) {
     }
 
 }
+//Modals - End
 
-
-const modal = ref(null);
-const schema = Yup.object().shape({
-    title: Yup.string().required('Title is required'),
-    date: Yup.date().min(new Date()),
-    customer: Yup.string().required('Customer is required')
-});
-
+//Form - Start
 const onSubmit = async (values, { setErrors }) => {
     const { classId, title, date, customer } = values;
     modal.value.hide();
@@ -134,9 +133,7 @@ const onSubmit = async (values, { setErrors }) => {
             }
             else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
         }
-
     }
-
 }
 
 const deleteYogaClass = async (id) => {
@@ -145,9 +142,13 @@ const deleteYogaClass = async (id) => {
     else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
 }
 
-const GetClassesByDate = (date) => {
-    classesStore.getAllByDate(date);
-}
+
+//Form - End
+
+//Services initialization
+customersStore.getAll();
+classTypesStore.getAll();
+classesStore.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
 
 </script>
 <template>
