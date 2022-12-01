@@ -7,6 +7,10 @@ import Modal from '../components/Modal.vue'
 import { ref } from 'vue'
 import { toast } from 'vue3-toastify';
 
+const year = new Date().getFullYear()
+const month = ((new Date().getMonth() + 1).toString()).length == 1 ? '0' + (new Date().getMonth() + 1) : (new Date().getMonth() + 1).toString()
+const day = new Date().getDate().toString().length == 1 ? '0' + new Date().getDate() : new Date().getDate()
+
 const classesStore = useClassesStore();
 const { yogaClasses } = storeToRefs(classesStore);
 const classTypesStore = useClassTypesStore();
@@ -17,7 +21,9 @@ const customersStore = useCustomersStore();
 const { customers } = storeToRefs(customersStore)
 const reservationEdit = ref(false);
 const reservationAdd = ref(false);
-const selectedDate = ref(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
+const selectedDate = ref(year + '-' + month + '-' + day);
+
+
 const formValues = {
     classId: null,
     title: null,
