@@ -8,7 +8,18 @@ namespace Application.DTOs.CustomerDTOs
 {
     public class CustomerUpdateDTO
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Phone { get; set; }
+        public string? MobileNumber { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public string? Sex { get; set; }
+        public string? Adress { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? PostalCode { get; set; }
+        public DateTime? PayDate { get; set; }
+        public int? TimesPerMonth { get; set; }
+        public string? Username { get; set; }
     }
 }

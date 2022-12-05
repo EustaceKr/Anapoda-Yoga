@@ -15,57 +15,98 @@ const formValues = {
     id: null,
     firstName: '',
     lastName: '',
+    phone: '',
+    mobileNumber: '',
+    dateOfBirth: '',
+    sex: '',
+    adress:'',
+    city:'',
+    state:'',
+    postalCode:'',
+    payDate: '',
+    timesPerMonth: '',
     username:'',
     password: '',
 }
 const schema = Yup.object().shape({
+    username: Yup.string().required('Username is required'),
+    password: Yup.string().required('Password is required'),
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last Name is required'),
-    username: Yup.string().required('Username is required'),
-    password: Yup.string().required('Password is required')
 });
 const isCreate = ref(true);
 
-function getDate(datetime){
+function getDateCustom(datetime){
     var date = new Date(datetime)
-    if(date != 'Mon Jan 01 0001 00:00:00 GMT+0134 (Eastern European Standard Time)')
-        return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
+    return date.toLocaleDateString();
+}
+
+function getDateForm(datetime){
+    var date = new Date(datetime)
+    if(date != 'Mon Jan 01 0001 00:00:00 GMT+0134 (Eastern European Standard Time)'){
+        var year = date.getFullYear()
+        var month = date.getMonth().toString().length == 1 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+        var day = date.getDate().toString().length == 1 ? '0' + date.getDate() : date.getDate()
+        return year + '-' + month + '-' + day
+    }
     else return null
 }
 
-function showModal(id, firstName, lastName){
+function showModal(id, firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCode, payDate, timesPerMonth){
     if(id){
         formValues.id = id;
-        formValues.firstName = firstName;
-        formValues.lastName = lastName;
         formValues.username = 'NoNeedForUserName'
         formValues.password = 'NoNeedForPassword'
+        formValues.firstName = firstName;
+        formValues.lastName = lastName;
+        formValues.phone = phone;
+        formValues.mobileNumber = mobileNumber;
+        formValues.dateOfBirth =  getDateForm(dateOfBirth);
+        formValues.sex = sex;
+        formValues.adress = adress;
+        formValues.city = city;
+        formValues.state = state;
+        formValues.postalCode = postalCode;
+        formValues.payDate = getDateForm(payDate);
+        formValues.timesPerMonth = timesPerMonth;
         isCreate.value = false;
         modal.value.show();
     }else{
         formValues.id = null;
+        formValues.username = '';
+        formValues.password = '';
         formValues.firstName = '';
         formValues.lastName = '';
+        formValues.phone = '';
+        formValues.mobileNumber = '';
+        formValues.dateOfBirth = '';
+        formValues.sex = '';
+        formValues.adress = '';
+        formValues.city = '';
+        formValues.state = '';
+        formValues.postalCode = '';
+        formValues.payDate = '';
+        formValues.timesPerMonth = '';
         isCreate.value = true;
         modal.value.show();
     }
 }
 
 const onSubmit = async(values, { setErrors }) => {
-    const { id,firstName, lastName, username, password } = values;
+    const { id,firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCosde, payDate, timesPerMonth, username, password } = values;
     modal.value.hide();
     if(id){
         formValues.username = '';
         formValues.password = '';
-        var response = await customersStore.editCustomer(id, firstName, lastName)
+        var response = await customersStore.editCustomer(id, firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCosde, payDate, timesPerMonth)
             .catch(error => setErrors({ apiError: error }));
         if (response == 200 ) toast.success("Customer successfully editted.",{posistion:toast.POSITION.TOP_RIGHT})
-        else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+        else toast.error(`Something went wrong`, {posistion:toast.POSITION.TOP_RIGHT})
     }else{
-        var response = await customersStore.saveCustomer(firstName, lastName, username, password)
+        var response = await customersStore.saveCustomer(firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCosde, payDate, timesPerMonth, username, password)
             .catch(error => setErrors({ apiError: error }));
         if (response == 201) toast.success("Customer successfully added.",{posistion:toast.POSITION.TOP_RIGHT})
-        else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+        else toast.error(`Something went wrong ${response}` , {posistion:toast.POSITION.TOP_RIGHT})
     }
 }
 
@@ -82,28 +123,45 @@ customersStore.getAll();
 <template>
     <button @click="showModal(null,null,null)">Add Customer</button>
     <table class="table" v-if="customers.length">
-        <thead>
+        <thead class="thead-dark" style="width:100%">
             <tr>
                 <th scope="col">First name</th>
                 <th scope="col">Last Name</th>
-                <th scope="col">Created Date</th>
-                <th scope="col">Updated Date</th>
-                <th scope="col">Delete</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Mobile Number</th>
+                <th scope="col">Date Of Birth</th>
+                <th scope="col">Sex</th>
+                <th scope="col">Adress</th>
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">Postal Code</th>
+                <th scope="col">Pay Date</th>
+                <th scope="col">Times Per Month</th>
                 <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="customer in customers" :key="customer.id">
                 <td>{{customer.firstName}}</td>
                 <td>{{customer.lastName}}</td>
-                <td>{{getDate(customer.createdDate)}}</td>
-                <td>{{getDate(customer.updatedDate)}}</td>
+                <td>{{customer.phone}}</td>
+                <td>{{customer.mobileNumber}}</td>
+                <td>{{new Date(customer.dateOfBirth).toLocaleDateString()}}</td>
+                <td>{{customer.sex}}</td>
+                <td>{{customer.adress}}</td>
+                <td>{{customer.city}}</td>
+                <td>{{customer.state}}</td>
+                <td>{{customer.postalCode}}</td>
+                <td>{{new Date(customer.payDate).toLocaleDateString()}}</td>
+                <td>{{customer.timesPerMonth}}</td>
+                <td><button @click.prevent="showModal(customer.id, customer.firstName, customer.lastName,customer.phone,customer.mobileNumber,customer.dateOfBirth,
+                        customer.sex,customer.adress,customer.city,customer.state,customer.postalCode,customer.payDate,customer.timesPerMonth)">Edit</button></td>
                 <td><button @click.prevent="deleteCustomer(customer.id)">Delete</button></td>
-                <td><button @click.prevent="showModal(customer.id, customer.firstName, customer.lastName)">Edit</button></td>
             </tr>
         </tbody>
     </table>
-    <Modal ref="modal" maxWidth="800px" width="300px">
+    <Modal ref="modal" maxWidth="1400px" width="700px">
         <template #header v-if="isCreate">
             <label class="col-form-label mb-2" style="font-size: 1.15em;">
                 Create Customer
@@ -125,6 +183,50 @@ customersStore.getAll();
                 <Field name="lastName" type="text" class="form-control"
                     :class="{ 'is-invalid': errors.lastName }" />
                 <div class="invalid-feedback">{{errors.lastName}}</div>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <Field name="phone" type="text" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <Field name="mobileNumber" type="text" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <Field name="dateOfBirth" type="date" class="form-control" format="yyyy-MM-dd"/>
+            </div>
+            <div class="form-group">
+                <label>Sex</label>
+                <Field name="sex" as="select" class="form-control">
+                <option value="''">Select sex</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                </Field>
+            </div>
+            <div class="form-group">
+                <label>Adress</label>
+                <Field name="adress" type="text" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>City</label>
+                <Field name="city" type="text" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>State</label>
+                <Field name="state" type="text" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>Postal Code</label>
+                <Field name="postalCode" type="text" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>Pay Date</label>
+                <Field name="payDate" type="date" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label>Times per Month</label>
+                <Field name="timesPerMonth" type="number" class="form-control"/>
             </div>
             <div class="form-group" v-show="isCreate">
                 <label>Username</label>

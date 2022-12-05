@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220719122745_InitialCreate")]
+    [Migration("20221205104120_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,11 +56,9 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -83,6 +81,9 @@ namespace Data.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("PayDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
@@ -103,6 +104,9 @@ namespace Data.Migrations
 
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TimesPerMonth")
+                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -129,19 +133,19 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d",
+                            Id = "3b092af1-01ba-4c51-9dce-2c0db982a49d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d5f6571e-2d5d-49d8-9016-1e148e6fc5ee",
-                            CreatedDate = new DateTime(2022, 7, 19, 15, 27, 45, 12, DateTimeKind.Local).AddTicks(9931),
+                            ConcurrencyStamp = "9d5f4662-91a4-4021-a412-bafb5329173d",
+                            CreatedDate = new DateTime(2022, 12, 5, 12, 41, 20, 637, DateTimeKind.Local).AddTicks(7175),
                             Email = "tade@tade.com",
                             EmailConfirmed = false,
                             FirstName = "St",
                             LastName = "Kr",
                             LockoutEnabled = false,
                             NormalizedUserName = "SA",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAPdsm1t9TJVSpDzMJ+idIGGDdlLYn4ijIxiZTUCKKd7f2/u9cWyjWIfQIn4fn6xyA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPQS9N517AVZT7NBKmQ7jWOSHK+B0XUbCnQgntyEWw7Jl2x4K9iNcw+FeRn8JJQ+TQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c6dca62a-8f80-4a61-954e-7d3245bf1f2e",
+                            SecurityStamp = "a7ed1880-d56a-4516-a42d-3f94352b0073",
                             TwoFactorEnabled = false,
                             UserName = "sa"
                         });
@@ -244,15 +248,15 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2b550c26-19a7-4257-8dd6-d563b5b4e33f",
-                            ConcurrencyStamp = "4445a3e3-8d64-4891-bbdd-2a15a4f847fd",
+                            Id = "9f0f2176-bf7f-41f8-a246-853f1893ad33",
+                            ConcurrencyStamp = "f15c9164-dba8-4666-bf7c-5904f2a16d8d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "aadb8aba-9ffd-4ddc-9cc9-fa8c214d1506",
-                            ConcurrencyStamp = "1d2ea3ec-64c7-401c-b04e-2fbe2f7e17c9",
+                            Id = "c0ea0f72-ab51-41d7-8f87-9661a5f0a276",
+                            ConcurrencyStamp = "a73f5918-0bb2-4096-9f3b-29a645f17a80",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -347,8 +351,8 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d",
-                            RoleId = "2b550c26-19a7-4257-8dd6-d563b5b4e33f"
+                            UserId = "3b092af1-01ba-4c51-9dce-2c0db982a49d",
+                            RoleId = "9f0f2176-bf7f-41f8-a246-853f1893ad33"
                         });
                 });
 

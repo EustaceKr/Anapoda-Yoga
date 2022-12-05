@@ -161,7 +161,7 @@ classesStore.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth(
     <div>
         <button @click="showModal(null, null, null)" class="btn btn-primary">Create a class</button>
     </div>
-    <div style=" margin: auto;width: 30%;padding: 10px;">
+    <div style=" margin: auto;width: 10%;padding: 10px;">
         <input style="text-align:center; margin:auto;" type="date" v-model="selectedDate" @change="GetClassesByDate(selectedDate)"/>
     </div>
     <table class="table" v-if="yogaClasses.length">

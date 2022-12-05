@@ -17,7 +17,7 @@
                   <a v-if="authStore.user" @click="authStore.logout()" class="nav-item nav-link">Logout</a>
               </div>
           </nav>
-          <div class="container pt-4 pb-4">
+          <div class="container-fluid pt-4 pb-5">
               <RouterView />
           </div>
       </div>

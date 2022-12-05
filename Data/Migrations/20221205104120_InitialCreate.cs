@@ -28,8 +28,8 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -38,6 +38,8 @@ namespace Data.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TimesPerMonth = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -229,22 +231,22 @@ namespace Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "2b550c26-19a7-4257-8dd6-d563b5b4e33f", "4445a3e3-8d64-4891-bbdd-2a15a4f847fd", "Admin", "ADMIN" });
+                values: new object[] { "9f0f2176-bf7f-41f8-a246-853f1893ad33", "f15c9164-dba8-4666-bf7c-5904f2a16d8d", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "aadb8aba-9ffd-4ddc-9cc9-fa8c214d1506", "1d2ea3ec-64c7-401c-b04e-2fbe2f7e17c9", "User", "USER" });
+                values: new object[] { "c0ea0f72-ab51-41d7-8f87-9661a5f0a276", "a73f5918-0bb2-4096-9f3b-29a645f17a80", "User", "USER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Adress", "City", "ConcurrencyStamp", "CreatedDate", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "MobileNumber", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "Phone", "PhoneNumber", "PhoneNumberConfirmed", "PostalCode", "SecurityStamp", "Sex", "State", "TwoFactorEnabled", "UpdatedDate", "UserName" },
-                values: new object[] { "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d", 0, null, null, "d5f6571e-2d5d-49d8-9016-1e148e6fc5ee", new DateTime(2022, 7, 19, 15, 27, 45, 12, DateTimeKind.Local).AddTicks(9931), null, "tade@tade.com", false, "St", "Kr", false, null, null, null, "SA", "AQAAAAEAACcQAAAAEAPdsm1t9TJVSpDzMJ+idIGGDdlLYn4ijIxiZTUCKKd7f2/u9cWyjWIfQIn4fn6xyA==", null, null, false, null, "c6dca62a-8f80-4a61-954e-7d3245bf1f2e", null, null, false, null, "sa" });
+                columns: new[] { "Id", "AccessFailedCount", "Adress", "City", "ConcurrencyStamp", "CreatedDate", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "MobileNumber", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PayDate", "Phone", "PhoneNumber", "PhoneNumberConfirmed", "PostalCode", "SecurityStamp", "Sex", "State", "TimesPerMonth", "TwoFactorEnabled", "UpdatedDate", "UserName" },
+                values: new object[] { "3b092af1-01ba-4c51-9dce-2c0db982a49d", 0, null, null, "9d5f4662-91a4-4021-a412-bafb5329173d", new DateTime(2022, 12, 5, 12, 41, 20, 637, DateTimeKind.Local).AddTicks(7175), null, "tade@tade.com", false, "St", "Kr", false, null, null, null, "SA", "AQAAAAEAACcQAAAAEPQS9N517AVZT7NBKmQ7jWOSHK+B0XUbCnQgntyEWw7Jl2x4K9iNcw+FeRn8JJQ+TQ==", null, null, null, false, null, "a7ed1880-d56a-4516-a42d-3f94352b0073", null, null, null, false, null, "sa" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "2b550c26-19a7-4257-8dd6-d563b5b4e33f", "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d" });
+                values: new object[] { "9f0f2176-bf7f-41f8-a246-853f1893ad33", "3b092af1-01ba-4c51-9dce-2c0db982a49d" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
