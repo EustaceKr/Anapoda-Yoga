@@ -4,9 +4,8 @@ const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 export default {
     async getAllByUser() {
-        this.reservations = { loading: true };
         var result = await fetchWrapper.get(`${baseUrl}/reservations`)
-        this.reservations = result.body
+        return result.body
     },
     async saveReservation(yogaClassId) {
         var result = await fetchWrapper.post(`${baseUrl}/reservations`, { yogaClassId })

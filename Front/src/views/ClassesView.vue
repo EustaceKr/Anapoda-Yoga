@@ -1,28 +1,26 @@
 <script setup>
-import { storeToRefs } from 'pinia';
-import { useClassesStore, useClassTypesStore, useReservationsStore, useCustomersStore } from '@/stores';
+import { YogaClassesService, YogaClassTypesService, ReservationsService, CustomersService } from '@/services';
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
 import Modal from '../components/Modal.vue'
 import { ref } from 'vue'
 import { toast } from 'vue3-toastify';
 
+const yogaClasses = ref([]);
+const YogaClassTypes = ref([])
+const customers = ref([]);
+const reservationEdit = ref(false);
+const reservationAdd = ref(false);
 const year = new Date().getFullYear()
 const month = ((new Date().getMonth() + 1).toString()).length == 1 ? '0' + (new Date().getMonth() + 1) : (new Date().getMonth() + 1).toString()
 const day = new Date().getDate().toString().length == 1 ? '0' + new Date().getDate() : new Date().getDate()
-
-const classesStore = useClassesStore();
-const { yogaClasses } = storeToRefs(classesStore);
-const classTypesStore = useClassTypesStore();
-const { classTypes } = storeToRefs(classTypesStore);
-const reservationsStore = useReservationsStore();
-//const { reservations } = storeToRefs(reservationsStore);
-const customersStore = useCustomersStore();
-const { customers } = storeToRefs(customersStore)
-const reservationEdit = ref(false);
-const reservationAdd = ref(false);
 const selectedDate = ref(year + '-' + month + '-' + day);
 
+YogaClassTypesService.getAll().then(x => YogaClassTypes.value = x);
+CustomersService.getAll().then(x => customers.value = x)
+YogaClassesService.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()).then(x => yogaClasses.value = x);
+
+console.log(customers.value);
 
 const formValues = {
     classId: null,
@@ -40,7 +38,7 @@ const schema = Yup.object().shape({
 
 //Helpers -Start
 function getYogaClassTypeName(id) {
-if(Array.isArray(classTypes.value)) return classTypes.value.find(x => x.yogaClassTypeId == id).name;
+    if (Array.isArray(YogaClassTypes.value)) return YogaClassTypes.value.find(x => x.yogaClassTypeId == id).name;
     else return id
 }
 
@@ -58,7 +56,7 @@ function getYogaClassTime(datetime) {
     return enGB;
 }
 const GetClassesByDate = (date) => {
-    classesStore.getAllByDate(date);
+    YogaClassesService.getAllByDate(date).then(x => yogaClasses.value = x);
 }
 //Helpers - End
 
@@ -85,7 +83,7 @@ function showReservationsModal(classId, title, date, isAdd) {
     if (isAdd) {
         reservationAdd.value = true
         reservationEdit.value = true
-        customersStore.getNotInYogaClass(classId);
+        customersService.getNotInYogaClass(classId).then(x => customers.value = x);
         formValues.classId = classId;
         formValues.title = title;
         formValues.date = date;
@@ -94,7 +92,7 @@ function showReservationsModal(classId, title, date, isAdd) {
     } else {
         reservationAdd.value = false
         reservationEdit.value = true
-        customersStore.getInYogaClass(classId);
+        customersService.getInYogaClass(classId).then(x => customers.value = x);
         formValues.classId = classId;
         formValues.title = title;
         formValues.date = date;
@@ -111,50 +109,46 @@ const onSubmit = async (values, { setErrors }) => {
     modal.value.hide();
     if (!reservationEdit.value) {
         if (classId) {
-            var response = await classesStore.editClass(classId, title, date, selectedDate.value)
+            var response = await YogaClassesService.editClass(classId, title, date, selectedDate.value)
                 .catch(error => setErrors({ apiError: error }));
-            if(response == 200) toast.success("Class successfully editted.",{posistion:toast.POSITION.TOP_RIGHT})
-            else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+            YogaClassesService.getAllByDate(selectedDate.value).then(x => yogaClasses.value = x);
+            if (response == 200) toast.success("Class successfully editted.", { posistion: toast.POSITION.TOP_RIGHT })
+            else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
         } else {
-            var response = await classesStore.saveClass(title, date, selectedDate.value)
+            var response = await YogaClassesService.saveClass(title, date, selectedDate.value)
                 .catch(error => setErrors({ apiError: error }));
-                if(response == 201) toast.success("Class successfully added.",{posistion:toast.POSITION.TOP_RIGHT})
-                else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+            YogaClassesService.getAllByDate(selectedDate.value).then(x => yogaClasses.value = x);
+            if (response == 201) toast.success("Class successfully added.", { posistion: toast.POSITION.TOP_RIGHT })
+            else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
         }
     } else if (reservationEdit) {
         if (reservationAdd.value) {
-            var response = await reservationsStore.adminSaveReservation(classId, customer)
+            var response = await ReservationsService.adminSaveReservation(classId, customer)
                 .catch(error => setErrors({ apiError: error }));
-            if (response == 200){
-                classesStore.getAllByDate(selectedDate.value);
-                toast.success("Reservation successfully added.",{posistion:toast.POSITION.TOP_RIGHT})
+            if (response == 200) {
+
+                toast.success("Reservation successfully added.", { posistion: toast.POSITION.TOP_RIGHT })
             }
-            else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
-        }else if (!reservationAdd.value){
-            var response = await reservationsStore.adminDeleteReservation(classId, customer)
+            else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
+        } else if (!reservationAdd.value) {
+            var response = await ReservationsService.adminDeleteReservation(classId, customer)
                 .catch(error => setErrors({ apiError: error }));
-            if (response == 200){
-                classesStore.getAllByDate(selectedDate.value);
-                toast.warning("Reservation successfully cancelled.",{posistion:toast.POSITION.TOP_RIGHT})
+            if (response == 200) {
+                YogaClassesService.getAllByDate(selectedDate.value).then(x => yogaClasses.value = x);
+                toast.warning("Reservation successfully cancelled.", { posistion: toast.POSITION.TOP_RIGHT })
             }
-            else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+            else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
         }
     }
 }
 
 const deleteYogaClass = async (id) => {
-    var response = await classesStore.deleteClass(id, selectedDate.value)
-    if(response == 200) toast.warning("Class successfully deleted.",{posistion:toast.POSITION.TOP_RIGHT})
-    else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+    var response = await YogaClassesService.deleteClass(id, selectedDate.value)
+    if (response == 200) toast.warning("Class successfully deleted.", { posistion: toast.POSITION.TOP_RIGHT })
+    else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
 }
 
-
 //Form - End
-
-//Services initialization
-customersStore.getAll();
-classTypesStore.getAll();
-classesStore.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
 
 </script>
 <template>
@@ -162,7 +156,8 @@ classesStore.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth(
         <button @click="showModal(null, null, null)" class="btn btn-primary">Create a class</button>
     </div>
     <div style=" margin: auto;width: 10%;padding: 10px;">
-        <input style="text-align:center; margin:auto;" type="date" v-model="selectedDate" @change="GetClassesByDate(selectedDate)"/>
+        <input style="text-align:center; margin:auto;" type="date" v-model="selectedDate"
+            @change="GetClassesByDate(selectedDate)" />
     </div>
     <table class="table" v-if="yogaClasses.length">
         <thead>
@@ -221,14 +216,14 @@ classesStore.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth(
                 <label>Title</label>
                 <Field name="title" as="select" class="form-control" :class="{ 'is-invalid': errors.title }">
                     <option value="">Select a class type</option>
-                    <option v-for="classType in classTypes" :value="classType.yogaClassTypeId"
+                    <option v-for="classType in YogaClassTypes" :value="classType.yogaClassTypeId"
                         :key="classType.yogaClassTypeId">{{ classType.name }}</option>
                 </Field>
                 <div class="invalid-feedback">{{ errors.title }}</div>
             </div>
             <div class="form-group" v-show="!reservationEdit">
                 <label>Date</label>
-                <Field name="date" type="datetime-local" class="form-control"  :class="{ 'is-invalid': errors.date }" />
+                <Field name="date" type="datetime-local" class="form-control" :class="{ 'is-invalid': errors.date }" />
                 <div class="invalid-feedback">{{ errors.date }}</div>
             </div>
             <div v-show="reservationEdit">

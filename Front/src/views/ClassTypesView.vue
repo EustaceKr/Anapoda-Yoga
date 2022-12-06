@@ -1,6 +1,5 @@
 <script setup>
-import { storeToRefs } from 'pinia';
-import { useClassTypesStore } from '@/stores';
+import { YogaClassTypesService } from '@/services';
 import Modal from '../components/Modal.vue'
 import { ref } from 'vue'
 import { Form, Field } from 'vee-validate';
@@ -8,14 +7,20 @@ import * as Yup from 'yup';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
-const classTypesStore = useClassTypesStore();
-const { classTypes } = storeToRefs(classTypesStore);
+const classTypes = ref([])
+callForTypes();
+
+function callForTypes() {
+    YogaClassTypesService.getAll().then(x => classTypes.value = x);
+}
+
+
 const modal = ref(null);
 const formValues = {
     id: null,
     name: '',
     description: '',
-    duration:'01:00:00',
+    duration: '01:00:00',
     capacity: 7,
 }
 const schema = Yup.object().shape({
@@ -25,15 +30,15 @@ const schema = Yup.object().shape({
     duration: Yup.string().required('Duration is required')
 });
 
-function showModal(id,name,description,duration,capacity = null) {
-    if( id ){
+function showModal(id, name, description, duration, capacity = null) {
+    if (id) {
         formValues.id = id;
         formValues.name = name;
         formValues.description = description;
         formValues.duration = duration;
         formValues.capacity = capacity;
         modal.value.show();
-    }else{
+    } else {
         formValues.name = '';
         formValues.description = '';
         formValues.duration = '01:00:00';
@@ -42,34 +47,35 @@ function showModal(id,name,description,duration,capacity = null) {
     }
 }
 
-const onSubmit = async(values, { setErrors }) => {
-    const { id,name, description, capacity, duration } = values;
+const onSubmit = async (values, { setErrors }) => {
+    const { id, name, description, capacity, duration } = values;
     modal.value.hide();
-    if(id){
-        var response = await classTypesStore.editClassType(id,name, description, capacity, duration)
+    if (id) {
+        var response = await YogaClassTypesService.editClassType(id, name, description, capacity, duration)
             .catch(error => setErrors({ apiError: error }));
-        if (response == 200) toast.success("Class Type successfully edited.",{posistion:toast.POSITION.TOP_RIGHT})
-        else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
-    }else{
-        var response = await classTypesStore.saveClassType(name, description, capacity, duration)
+        callForTypes();
+        if (response == 200) toast.success("Class Type successfully edited.", { posistion: toast.POSITION.TOP_RIGHT })
+        else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
+    } else {
+        var response = await YogaClassTypesService.saveClassType(name, description, capacity, duration)
             .catch(error => setErrors({ apiError: error }));
-        if (response == 201) toast.success("Class Type successfully added.",{posistion:toast.POSITION.TOP_RIGHT})
-        else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+        callForTypes();
+        if (response == 201) toast.success("Class Type successfully added.", { posistion: toast.POSITION.TOP_RIGHT })
+        else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
     }
 }
 
 const deleteType = async (id) => {
-    var response = await classTypesStore.deleteClassType(id)
+    var response = await YogaClassTypesService.deleteClassType(id)
         .catch(error => setErrors({ apiError: error }));
-    if (response == 200) toast.warning("Class Type successfully deleted.",{posistion:toast.POSITION.TOP_RIGHT})
-    else toast.error("Something went wrong", {posistion:toast.POSITION.TOP_RIGHT})
+    callForTypes();
+    if (response == 200) toast.warning("Class Type successfully deleted.", { posistion: toast.POSITION.TOP_RIGHT })
+    else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
 }
 
-//Services initialization
-classTypesStore.getAll();
 </script>
 <template>
-    <button @click="showModal()">Add new class type</button>
+    <button @click="showModal(null, null, null, null, null)">Add new class type</button>
     <table class="table" v-if="classTypes.length">
         <thead>
             <tr>
@@ -83,12 +89,14 @@ classTypesStore.getAll();
         </thead>
         <tbody>
             <tr v-for="classType in classTypes" :key="classType.yogaClassTypeId">
-                <td>{{classType.name}}</td>
-                <td>{{classType.description}}</td>
-                <td>{{classType.duration}}</td>
-                <td>{{classType.capacity}}</td>
+                <td>{{ classType.name }}</td>
+                <td>{{ classType.description }}</td>
+                <td>{{ classType.duration }}</td>
+                <td>{{ classType.capacity }}</td>
                 <td><button @click.prevent="deleteType(classType.yogaClassTypeId)">Delete</button></td>
-                <td><button @click.prevent="showModal(classType.yogaClassTypeId,classType.name,classType.description,classType.duration,classType.capacity)">Edit</button></td>
+                <td><button
+                        @click.prevent="showModal(classType.yogaClassTypeId, classType.name, classType.description, classType.duration, classType.capacity)">Edit</button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -98,29 +106,30 @@ classTypesStore.getAll();
                 Yoga Class Type
             </label>
         </template>
-        <Form @submit="onSubmit" :validation-schema="schema" :initial-values="formValues" v-slot="{ errors,isSubmitting }">
+        <Form @submit="onSubmit" :validation-schema="schema" :initial-values="formValues"
+            v-slot="{ errors, isSubmitting }">
             <div class="form-group">
                 <label>Name</label>
                 <Field name="name" type="text" class="form-control" :class="{ 'is-invalid': errors.name }" />
-                <div class="invalid-feedback">{{errors.name}}</div>
+                <div class="invalid-feedback">{{ errors.name }}</div>
             </div>
             <div class="form-group">
                 <label>Description</label>
                 <Field name="description" type="text" class="form-control"
                     :class="{ 'is-invalid': errors.description }" />
-                <div class="invalid-feedback">{{errors.description}}</div>
+                <div class="invalid-feedback">{{ errors.description }}</div>
             </div>
             <div class="form-group">
                 <label>Duration</label>
                 <Field name="duration" type="text" class="form-control" :class="{ 'is-invalid': errors.duration }" />
-                <div class="invalid-feedback">{{errors.duration}}</div>
+                <div class="invalid-feedback">{{ errors.duration }}</div>
             </div>
             <div class="form-group">
                 <label>Capacity</label>
                 <Field name="capacity" type="text" class="form-control" :class="{ 'is-invalid': errors.capacity }" />
-                <div class="invalid-feedback">{{errors.capacity}}</div>
+                <div class="invalid-feedback">{{ errors.capacity }}</div>
             </div>
-            <div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
+            <div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{ errors.apiError }}</div>
             <div class="form-group">
                 <button class="btn btn-primary" :disabled="isSubmitting">
                     <span v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>

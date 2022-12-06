@@ -4,20 +4,18 @@ const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 export default {
     async getAll() {
-        this.customers = { loading: true };
         var result = await fetchWrapper.get(`${baseUrl}/customers`)
-        this.customers = result.body
+        return result.body
     },
-    async saveCustomer(firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCosde, payDate, timesPerMonth, username, password) {
+    async saveCustomer(firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCode, payDate, timesPerMonth, username, password) {
         var result = await fetchWrapper.post(`${baseUrl}/customers`, {
-            firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCosde, payDate, timesPerMonth
+            firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCode, payDate, timesPerMonth
             , username, password
         })
-        await this.getAll();
         return result.status
     },
-    async editCustomer(id, firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCosde, payDate, timesPerMonth) {
-        var result = await fetchWrapper.put(`${baseUrl}/customers/${id}`, { firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCosde, payDate, timesPerMonth })
+    async editCustomer(id, firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCode, payDate, timesPerMonth) {
+        var result = await fetchWrapper.put(`${baseUrl}/customers/${id}`, { firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCode, payDate, timesPerMonth })
         await this.getAll();
         return result.status
     },

@@ -4,9 +4,8 @@ const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 export default {
     async getAll() {
-        this.classTypes = { loading: true };
         var result = await fetchWrapper.get(`${baseUrl}/yogaclasstypes`)
-        this.classTypes = result.body
+        return result.body;
     },
     async saveClassType(name, description, capacity, duration) {
         var result = await fetchWrapper.post(`${baseUrl}/yogaclasstypes`, { name, description, capacity, duration })
