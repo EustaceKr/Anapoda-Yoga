@@ -8,7 +8,7 @@ import { toast } from 'vue3-toastify';
 
 const yogaClasses = ref([]);
 const YogaClassTypes = ref([])
-const customers = ref([]);
+const customers = ref([]); ``
 const reservationEdit = ref(false);
 const reservationAdd = ref(false);
 const year = new Date().getFullYear()
@@ -16,11 +16,21 @@ const month = ((new Date().getMonth() + 1).toString()).length == 1 ? '0' + (new 
 const day = new Date().getDate().toString().length == 1 ? '0' + new Date().getDate() : new Date().getDate()
 const selectedDate = ref(year + '-' + month + '-' + day);
 
-YogaClassTypesService.getAll().then(x => YogaClassTypes.value = x);
-CustomersService.getAll().then(x => customers.value = x)
-YogaClassesService.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()).then(x => yogaClasses.value = x);
 
-console.log(customers.value);
+function callForYogaTypes() {
+    YogaClassTypesService.getAll().then(x => YogaClassTypes.value = x);
+}
+
+function callForCustomers() {
+    CustomersService.getAll().then(x => customers.value = x)
+}
+
+function callForClasses() {
+    YogaClassesService.getAllByDate(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()).then(x => yogaClasses.value = x);
+}
+callForCustomers();
+callForYogaTypes();
+callForClasses();
 
 const formValues = {
     classId: null,
@@ -83,7 +93,7 @@ function showReservationsModal(classId, title, date, isAdd) {
     if (isAdd) {
         reservationAdd.value = true
         reservationEdit.value = true
-        customersService.getNotInYogaClass(classId).then(x => customers.value = x);
+        CustomersService.getNotInYogaClass(classId).then(x => customers.value = x);
         formValues.classId = classId;
         formValues.title = title;
         formValues.date = date;
@@ -92,7 +102,7 @@ function showReservationsModal(classId, title, date, isAdd) {
     } else {
         reservationAdd.value = false
         reservationEdit.value = true
-        customersService.getInYogaClass(classId).then(x => customers.value = x);
+        CustomersService.getInYogaClass(classId).then(x => customers.value = x);
         formValues.classId = classId;
         formValues.title = title;
         formValues.date = date;
@@ -125,14 +135,15 @@ const onSubmit = async (values, { setErrors }) => {
         if (reservationAdd.value) {
             var response = await ReservationsService.adminSaveReservation(classId, customer)
                 .catch(error => setErrors({ apiError: error }));
+            callForClasses();
             if (response == 200) {
-
                 toast.success("Reservation successfully added.", { posistion: toast.POSITION.TOP_RIGHT })
             }
             else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
         } else if (!reservationAdd.value) {
             var response = await ReservationsService.adminDeleteReservation(classId, customer)
                 .catch(error => setErrors({ apiError: error }));
+            callForClasses();
             if (response == 200) {
                 YogaClassesService.getAllByDate(selectedDate.value).then(x => yogaClasses.value = x);
                 toast.warning("Reservation successfully cancelled.", { posistion: toast.POSITION.TOP_RIGHT })
@@ -144,6 +155,7 @@ const onSubmit = async (values, { setErrors }) => {
 
 const deleteYogaClass = async (id) => {
     var response = await YogaClassesService.deleteClass(id, selectedDate.value)
+    callForClasses();
     if (response == 200) toast.warning("Class successfully deleted.", { posistion: toast.POSITION.TOP_RIGHT })
     else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
 }

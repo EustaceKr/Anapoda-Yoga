@@ -14,9 +14,6 @@ function callForCustomers() {
     CustomersService.getAll().then(x => customers.value = x);
 }
 
-
-console.log(customers.value)
-
 const modal = ref(null);
 const formValues = {
     id: null,

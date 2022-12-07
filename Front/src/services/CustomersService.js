@@ -25,15 +25,11 @@ export default {
         return result.status
     },
     async getInYogaClass(yogaClassId) {
-        this.customers = { loading: true };
         var result = await fetchWrapper.get(`${baseUrl}/customers/inYogaClass/${yogaClassId}`)
-        this.customers = result.body
-        return result.status
+        return result.body
     },
     async getNotInYogaClass(yogaClassId) {
-        this.customers = { loading: true };
         var result = await fetchWrapper.get(`${baseUrl}/customers/notInYogaClass/${yogaClassId}`)
-        this.customers = result.body
-        return result.status
+        return result.body
     }
 }
