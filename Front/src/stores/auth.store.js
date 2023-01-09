@@ -33,6 +33,13 @@ export const useAuthStore = defineStore({
                 else return false
             }
             else return false
+        },
+        checkIfUser(){
+            if(this.user){
+                if (JSON.stringify(this.user.userRole) == '["User"]') return true
+                else return false
+            }
+            else return false
         }
     }
 });

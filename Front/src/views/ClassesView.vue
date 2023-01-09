@@ -52,6 +52,11 @@ function getYogaClassTypeName(id) {
     else return id
 }
 
+function getYogaClassTypeCapacity(id){
+    if (Array.isArray(YogaClassTypes.value)) return YogaClassTypes.value.find(x => x.yogaClassTypeId == id).capacity;
+    else return 0
+}
+
 function getYogaClassDate(datetime) {
     var date = new Date(datetime)
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
@@ -65,6 +70,7 @@ function getYogaClassTime(datetime) {
     });
     return enGB;
 }
+
 const GetClassesByDate = (date) => {
     YogaClassesService.getAllByDate(date).then(x => yogaClasses.value = x);
 }
@@ -186,7 +192,7 @@ const deleteYogaClass = async (id) => {
                 <td>{{ getYogaClassTypeName(yogaClass.yogaClassTypeId) }}</td>
                 <td>{{ getYogaClassDate(yogaClass.date) }}</td>
                 <td>{{ getYogaClassTime(yogaClass.date) }}</td>
-                <td>{{ yogaClass.reservations.length }}</td>
+                <td>{{ yogaClass.reservations.length }} / {{ getYogaClassTypeCapacity(yogaClass.yogaClassTypeId) }}</td>
                 <td><button @click.prevent="deleteYogaClass(yogaClass.yogaClassId)">Delete</button></td>
                 <td><button
                         @click.prevent="showModal(yogaClass.yogaClassId, yogaClass.yogaClassTypeId, yogaClass.date)">Edit</button>

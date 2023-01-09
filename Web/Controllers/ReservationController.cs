@@ -58,6 +58,18 @@ namespace Web.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Reservation creation failed! Please check the details and try again." });
         }
 
+        [HttpDelete]
+        public async Task<ActionResult> DeleteReservation(string yogaClassId)
+        {
+            var user = await _customerService.GetUserIdFromUserName(User.Identity.Name);
+            var reservation = await _service.GetReservationByClassAndCustomer(yogaClassId, user.Id);
+            if (reservation == null) return NotFound();
+
+            _service.DeleteReservation(reservation);
+            await _service.Complete();
+            return Ok();
+        }
+
         [HttpPost("admin")]
         public async Task<ActionResult<ReservationReadDTO>> AdminCreateReservation(ReservationAdminCreateDTO reservationAdminCreateDto)
         {

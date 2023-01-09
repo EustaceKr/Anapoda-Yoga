@@ -18,16 +18,16 @@ namespace Data.Repositories.CustomerDAO
         }
         public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
         {
-            return await FindAll().Where(x => x.Id != "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d").OrderBy(c => c.LastName).ToListAsync();
+            return await FindAll().Where(x => x.Id != "3b092af1-01ba-4c51-9dce-2c0db982a49d").OrderBy(c => c.LastName).ToListAsync();
         }
         public async Task<IEnumerable<Customer>> GetCustomersInClassAsync(string yogaClassId)
         {
-            return await FindAll().Where(x => x.Id != "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d").Where(x => x.Reservations.Where(y => y.YogaClassId == yogaClassId).Any()).OrderBy(c => c.LastName).ToListAsync();
+            return await FindAll().Where(x => x.Id != "3b092af1-01ba-4c51-9dce-2c0db982a49d").Where(x => x.Reservations.Where(y => y.YogaClassId == yogaClassId).Any()).OrderBy(c => c.LastName).ToListAsync();
         }
 
         public async Task<IEnumerable<Customer>> GetCustomersNotInClassAsync(string yogaClassId)
         {
-            return await FindAll().Where(x => x.Id != "a818b71a-097a-4ba1-9ec8-b261d8bd3e8d").Where(x => !x.Reservations.Where(y => y.YogaClassId == yogaClassId).Any()).OrderBy(c => c.LastName).ToListAsync();
+            return await FindAll().Where(x => x.Id != "3b092af1-01ba-4c51-9dce-2c0db982a49d").Where(x => !x.Reservations.Where(y => y.YogaClassId == yogaClassId).Any()).OrderBy(c => c.LastName).ToListAsync();
         }
 
         public async Task<Customer> GetCustomerByIdAsync(string customerId)

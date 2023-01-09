@@ -11,6 +11,10 @@ export default {
         var result = await fetchWrapper.post(`${baseUrl}/reservations`, { yogaClassId })
         return result.status
     },
+    async deleteReservation(yogaClassId){
+        var result = await fetchWrapper.delete(`${baseUrl}/reservations/?yogaClassId=${yogaClassId}`)
+        return result.status
+    },
     async adminSaveReservation(yogaClassId, customerId) {
         var result = await fetchWrapper.post(`${baseUrl}/reservations/admin`, { yogaClassId, customerId })
         return result.status
