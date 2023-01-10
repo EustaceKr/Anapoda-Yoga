@@ -42,7 +42,6 @@ const formValues = {
 const modal = ref(null);
 const schema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
-    date: Yup.date().min(new Date()),
     customer: Yup.string().required('Customer is required')
 });
 
