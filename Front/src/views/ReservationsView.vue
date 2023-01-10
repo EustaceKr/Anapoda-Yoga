@@ -1,14 +1,15 @@
 <script setup>
-import { YogaClassesService, YogaClassTypesService, ReservationsService, CustomersService } from '@/services';
+import { YogaClassesService, YogaClassTypesService, ReservationsService } from '@/services';
 import { toast } from 'vue3-toastify';
 import { ref } from 'vue'
 
-const year = new Date().getFullYear()
-const month = ((new Date().getMonth() + 1).toString()).length == 1 ? '0' + (new Date().getMonth() + 1) : (new Date().getMonth() + 1).toString()
-const day = new Date().getDate().toString().length == 1 ? '0' + new Date().getDate() : new Date().getDate()
+const year = new Date().getFullYear();
+const month = ((new Date().getMonth() + 1).toString()).length == 1 ? '0' + (new Date().getMonth() + 1) : (new Date().getMonth() + 1).toString();
+const day = new Date().getDate().toString().length == 1 ? '0' + new Date().getDate() : new Date().getDate();
 const selectedDate = ref(year + '-' + month + '-' + day);
 const yogaClasses = ref([]);
-const YogaClassTypes = ref([])
+const YogaClassTypes = ref([]);
+const UserReservations = ref([]);
 
 const GetClassesByDate = (date) => {
     YogaClassesService.getAllByDate(date).then(x => yogaClasses.value = x);
@@ -49,6 +50,7 @@ function callForClasses() {
 const addCustomerReservation = async (id) => {
     var response =  await ReservationsService.saveReservation(id);
     callForClasses();
+    callForReservations();
     if (response == 200) {
         toast.success("Reservation successfully added.", { posistion: toast.POSITION.TOP_RIGHT })
     }
@@ -58,14 +60,38 @@ const addCustomerReservation = async (id) => {
 const deleteCustomerReservation = async (id) => {
     var response =  await ReservationsService.deleteReservation(id);
     callForClasses();
+    callForReservations();
     if (response == 200) {
         toast.warning("Reservation successfully deleted.", { posistion: toast.POSITION.TOP_RIGHT })
     }
     else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
 }
 
+function checkIfAbleToReserve(id, reservationsLength, capacity){
+    for(var i=0; i<UserReservations.value.length; i++){
+        if(UserReservations.value[i].yogaClassId == id) return false;
+    }
+    if(reservationsLength == capacity) return false;
+    return true
+}
 
+function checkIfAbleToCancel(id, date){
+    var d1 = new Date();
+    var d2 = new Date(date);
+    d1.setTime(d1.getTime() + 2 * 60 * 60 * 1000);
 
+    for(var i=0; i<UserReservations.value.length; i++){
+        if(UserReservations.value[i].yogaClassId == id && d1 < d2) return true;
+    }
+    
+    return false;
+}
+
+async function callForReservations() {
+    UserReservations.value = await ReservationsService.getAllByUser();
+}
+
+callForReservations();
 callForClasses();
 callForYogaTypes();
 
@@ -92,10 +118,10 @@ callForYogaTypes();
                 <td>{{ getYogaClassTime(yogaClass.date) }}</td>
                 <td>{{ yogaClass.reservations.length }} / {{ getYogaClassTypeCapacity(yogaClass.yogaClassTypeId) }}</td>
                 <td>
-                    <button @click.prevent="addCustomerReservation(yogaClass.yogaClassId)">Reserve</button>
+                    <button @click.prevent="addCustomerReservation(yogaClass.yogaClassId)" :disabled="!checkIfAbleToReserve(yogaClass.yogaClassId, yogaClass.reservations.length, getYogaClassTypeCapacity(yogaClass.yogaClassTypeId))">Reserve</button>
                 </td>
                 <td>
-                    <button @click.prevent="deleteCustomerReservation(yogaClass.yogaClassId)">Cancel</button>
+                    <button @click.prevent="deleteCustomerReservation(yogaClass.yogaClassId)" :disabled="!checkIfAbleToCancel(yogaClass.yogaClassId, yogaClass.date)">Cancel</button>
                 </td>
             </tr>
         </tbody>
