@@ -86,9 +86,6 @@ namespace Web.Controllers
             }
             return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "Reservation cancelation failed! Please check the details and try again." });
 
-            //_service.DeleteReservation(reservation);
-            //await _service.Complete();
-            //return Ok();
         }
 
         [HttpPost("admin")]

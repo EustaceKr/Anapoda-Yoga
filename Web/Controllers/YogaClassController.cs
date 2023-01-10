@@ -1,9 +1,11 @@
 ﻿using Application.DTOs.YogaClassDTOs;
 using Application.DTOs.YogaClassTypeDTOs;
+using Application.Services.CustomerImplementation;
 using Application.Services.YogaClassImplementation;
 using Application.UserAuthentication;
 using AutoMapper;
 using Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +15,15 @@ namespace Web.Controllers
     [ApiController]
     public class YogaClassController : Controller
     {
+        private readonly UserManager<Customer> _userManager;
+        private readonly ICustomerService _customerService;
         private readonly IYogaClassService _service;
         private readonly IMapper _mapper;
-        public YogaClassController(IYogaClassService service, IMapper mapper)
+        public YogaClassController(IYogaClassService service, ICustomerService customerService, UserManager<Customer> userManager, IMapper mapper)
         {
             _service = service;
+            _customerService = customerService;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
@@ -26,6 +32,9 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<YogaClassReadDTO>>> GetAllYogaClasses()
         {
+            
+
+
             var yogaClasses = await _service.GetAllYogaClasses();
             return Ok(_mapper.Map<IEnumerable<YogaClassReadDTO>>(yogaClasses));
         }
@@ -34,8 +43,19 @@ namespace Web.Controllers
         [HttpGet("{time}")]
         public async Task<ActionResult<IEnumerable<YogaClassReadDTO>>> GetYogaClassesByTime(DateTime time)
         {
-            var yogaClasses = await _service.GetYogaClassesByDate(time);
-            return Ok(_mapper.Map<IEnumerable<YogaClassReadDTO>>(yogaClasses));
+            var user = await _customerService.GetUserIdFromUserName(User.Identity.Name);
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (userRoles.Contains("Admin"))
+            {
+                var yogaClasses = await _service.GetYogaClassesByDate(time);
+                return Ok(_mapper.Map<IEnumerable<YogaClassReadDTO>>(yogaClasses));
+            }
+            else
+            {
+                var yogaClasses = await _service.GetYogaClassesByDateForUser(time);
+                return Ok(_mapper.Map<IEnumerable<YogaClassReadDTO>>(yogaClasses));
+            }
         }
 
         //GET api/yogaclass/{id}

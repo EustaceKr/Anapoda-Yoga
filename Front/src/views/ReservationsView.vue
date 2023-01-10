@@ -49,7 +49,7 @@ function callForClasses() {
 
 const addCustomerReservation = async (id) => {
     var response =  await ReservationsService.saveReservation(id);
-    callForClasses();
+    GetClassesByDate(selectedDate.value);
     callForReservations();
     if (response == 200) {
         toast.success("Reservation successfully added.", { posistion: toast.POSITION.TOP_RIGHT })
@@ -59,7 +59,7 @@ const addCustomerReservation = async (id) => {
 
 const deleteCustomerReservation = async (id) => {
     var response =  await ReservationsService.deleteReservation(id);
-    callForClasses();
+    GetClassesByDate(selectedDate.value);
     callForReservations();
     if (response == 200) {
         toast.warning("Reservation successfully deleted.", { posistion: toast.POSITION.TOP_RIGHT })

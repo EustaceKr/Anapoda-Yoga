@@ -25,6 +25,10 @@ namespace Data.Repositories.YogaClassDAO
         {
             return await FindAll().OrderBy(c => c.Date).Where(x => x.Date.Date == time.Date).Include(x => x.Reservations).ToListAsync();
         }
+        public async Task<IEnumerable<YogaClass>> GetAllYogaClassesByDateForUserAsync(DateTime time)
+        {
+            return await FindAll().OrderBy(c => c.Date).Where(x => x.Date.Date == time.Date).Where(y => y.Date > DateTime.Now).Include(x => x.Reservations).ToListAsync();
+        }
         public async Task<YogaClass> GetYogaClassByIdAsync(string yogaClassId)
         {
             return await FindByCondition(yogaClass => yogaClass.YogaClassId.Equals(yogaClassId)).FirstOrDefaultAsync();

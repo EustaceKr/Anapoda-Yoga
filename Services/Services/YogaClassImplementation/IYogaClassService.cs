@@ -11,6 +11,7 @@ namespace Application.Services.YogaClassImplementation
     {
         Task<IEnumerable<YogaClass>> GetAllYogaClasses();
         Task<IEnumerable<YogaClass>> GetYogaClassesByDate(DateTime time);
+        Task<IEnumerable<YogaClass>> GetYogaClassesByDateForUser(DateTime time);
         Task<YogaClass> GetYogaClass(string id);
         void CreateYogaClass(YogaClass yogaClass);
         void UpdateYogaClass(YogaClass yogaClass);

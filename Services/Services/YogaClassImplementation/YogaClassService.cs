@@ -22,6 +22,10 @@ namespace Application.Services.YogaClassImplementation
             return await _repository.GetAllYogaClassesByDateAsync(time);
         }
 
+        public async Task<IEnumerable<YogaClass>> GetYogaClassesByDateForUser(DateTime time)
+        {
+            return await _repository.GetAllYogaClassesByDateForUserAsync(time);
+        }
         public async Task<YogaClass> GetYogaClass(string id)
         {
             return await _repository.GetYogaClassByIdAsync(id);

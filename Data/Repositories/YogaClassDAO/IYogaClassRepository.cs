@@ -12,6 +12,7 @@ namespace Data.Repositories.YogaClassDAO
     {
         Task<IEnumerable<YogaClass>> GetAllYogaClassesAsync();
         Task<IEnumerable<YogaClass>> GetAllYogaClassesByDateAsync(DateTime time);
+        Task<IEnumerable<YogaClass>> GetAllYogaClassesByDateForUserAsync(DateTime time);
         Task<YogaClass> GetYogaClassByIdAsync(string customerId);
     }
 }
