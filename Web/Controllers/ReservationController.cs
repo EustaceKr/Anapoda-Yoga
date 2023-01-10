@@ -1,6 +1,8 @@
 ﻿using Application.DTOs.ReservationDTOs;
 using Application.Services.CustomerImplementation;
 using Application.Services.ReservationImplementation;
+using Application.Services.YogaClassImplementation;
+using Application.Services.YogaClassTypesImplementation;
 using Application.UserAuthentication;
 using AutoMapper;
 using Data.Entities;
@@ -19,15 +21,19 @@ namespace Web.Controllers
     {
         private readonly IReservationService _service;
         private readonly ICustomerService _customerService;
+        private readonly IYogaClassService _yogaClassService;
+        private readonly IYogaClassTypeService _yogaClassTypeService;
         private readonly UserManager<Customer> _userManager;
         private readonly IMapper _mapper;
 
-        public ReservationController(IReservationService service ,UserManager<Customer> userManager, ICustomerService customerService, IMapper mapper)
+        public ReservationController(IReservationService service , IYogaClassService yogaClassService, IYogaClassTypeService yogaClassTypeService,UserManager<Customer> userManager, ICustomerService customerService, IMapper mapper)
         {
             _service = service;
             _userManager = userManager;
             _mapper = mapper;
             _customerService = customerService;
+            _yogaClassService = yogaClassService;
+            _yogaClassTypeService = yogaClassTypeService;
         }
 
         [HttpGet]
@@ -47,7 +53,12 @@ namespace Web.Controllers
             var reservationModel = _mapper.Map<Reservation>(reservationCreateDto);
             reservationModel.CustomerId = user.Id;
             reservationModel.CreatedAt = DateTime.Now;
-            if (await _service.CheckReservation(reservationModel, user))
+
+            YogaClass yogaClass = await _yogaClassService.GetYogaClass(reservationModel.YogaClassId);
+            yogaClass.YogaClassType = await _yogaClassTypeService.GetYogaClassType(yogaClass.YogaClassTypeId);
+            yogaClass.Reservations = (await _service.GetReservationsByClassAsync(reservationModel.YogaClassId)).ToList();
+
+            if (await _service.CheckReservationExists(reservationModel, user) && await _service.CheckCapacity(yogaClass))
             {
                 _service.CreateReservation(reservationModel);
                 if (await _service.Complete())
@@ -55,7 +66,7 @@ namespace Web.Controllers
                     return Ok();
                 }
             }
-            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Reservation creation failed! Please check the details and try again." });
+            return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "Reservation creation failed! Please check the details and try again." });
         }
 
         [HttpDelete]
@@ -65,9 +76,19 @@ namespace Web.Controllers
             var reservation = await _service.GetReservationByClassAndCustomer(yogaClassId, user.Id);
             if (reservation == null) return NotFound();
 
-            _service.DeleteReservation(reservation);
-            await _service.Complete();
-            return Ok();
+            YogaClass yogaClass = await _yogaClassService.GetYogaClass(reservation.YogaClassId);
+
+            if(DateTime.Now.AddHours(2) < yogaClass.Date)
+            {
+                _service.DeleteReservation(reservation);
+                await _service.Complete();
+                return Ok();
+            }
+            return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "Reservation cancelation failed! Please check the details and try again." });
+
+            //_service.DeleteReservation(reservation);
+            //await _service.Complete();
+            //return Ok();
         }
 
         [HttpPost("admin")]
@@ -77,7 +98,7 @@ namespace Web.Controllers
             reservationModel.CreatedAt = DateTime.Now;
 
             var user = await _customerService.GetCustomer(reservationModel.CustomerId);
-            if (await _service.CheckReservation(reservationModel, user))
+            if (await _service.CheckReservationExists(reservationModel, user))
             {
                 _service.CreateReservation(reservationModel);
                 if (await _service.Complete())
@@ -85,7 +106,7 @@ namespace Web.Controllers
                     return Ok();
                 }
             }
-            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Reservation creation failed! Please check the details and try again." });
+            return StatusCode(StatusCodes.Status400BadRequest, new Response { Status = "Error", Message = "Reservation creation failed! Please check the details and try again." });
         }
         [HttpDelete("admin")]
         public async Task<ActionResult> AdminDeleteReservation(string yogaClassId, string customerId)

@@ -71,7 +71,7 @@ function checkIfAbleToReserve(id, reservationsLength, capacity){
     for(var i=0; i<UserReservations.value.length; i++){
         if(UserReservations.value[i].yogaClassId == id) return false;
     }
-    if(reservationsLength == capacity) return false;
+    if(reservationsLength >= capacity) return false;
     return true
 }
 
@@ -83,7 +83,7 @@ function checkIfAbleToCancel(id, date){
     for(var i=0; i<UserReservations.value.length; i++){
         if(UserReservations.value[i].yogaClassId == id && d1 < d2) return true;
     }
-    
+
     return false;
 }
 

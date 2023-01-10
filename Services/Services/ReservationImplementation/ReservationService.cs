@@ -24,6 +24,11 @@ namespace Application.Services.ReservationImplementation
             return await _repository.GetAllReservationsByUserAsync(userId);
         }
 
+        public async Task<IEnumerable<Reservation>> GetReservationsByClassAsync(string yogaClassId)
+        {
+            return await _repository.GetReservationsFromYogaClass(yogaClassId);
+        }
+
         public async Task<Reservation> GetReservationByClassAndCustomer(string customerId, string yogaClassId)
         {
             return await _repository.GetReservationByClassAndCustomer(customerId, yogaClassId);
@@ -36,7 +41,7 @@ namespace Application.Services.ReservationImplementation
             _repository.Create(reservation);
         }
 
-        public async Task<bool> CheckReservation(Reservation reservation, Customer user)
+        public async Task<bool> CheckReservationExists(Reservation reservation, Customer user)
         {
             var userReservations = await _repository.GetAllReservationsByUserAsync(user.Id);
             List<string> userIds = new List<string>();
@@ -51,8 +56,14 @@ namespace Application.Services.ReservationImplementation
                 if (userIds.Contains(res.CustomerId)) return false;
             }
             return true;
-
         }
+        
+        public async Task<bool> CheckCapacity(YogaClass yogaClass)
+        {
+            if(yogaClass.Reservations.Count >= yogaClass.YogaClassType.Capacity ) return false;
+            return true;
+        }
+
         public void DeleteReservation(Reservation reservation)
         {
             if (reservation == null) throw new ArgumentNullException(nameof(reservation));

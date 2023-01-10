@@ -33,5 +33,6 @@ namespace Data.Repositories.ReservetionDAO
         {
             return await FindByCondition(reservation => reservation.YogaClassId == yogaClassId).Where(reservation => reservation.CustomerId == customerId).FirstOrDefaultAsync();
         }
+
     }
 }
