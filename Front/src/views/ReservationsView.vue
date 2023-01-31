@@ -1,5 +1,5 @@
 <script setup>
-import { YogaClassesService, YogaClassTypesService, ReservationsService } from '@/services';
+import { YogaClassesService, YogaClassTypesService, ReservationsService} from '@/services';
 import { toast } from 'vue3-toastify';
 import { ref } from 'vue'
 

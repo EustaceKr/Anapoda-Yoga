@@ -97,7 +97,7 @@ function showModal(classId, title, date) {
 function showReservationsModal(classId, title, date, isAdd) {
     if (isAdd) {
         reservationAdd.value = true
-        reservationEdit.value = false
+        reservationEdit.value = true
         CustomersService.getNotInYogaClass(classId).then(x => customers.value = x);
         formValues.classId = classId;
         formValues.title = title;
@@ -123,12 +123,14 @@ const onSubmit = async (values, { setErrors }) => {
     const { classId, title, date, customer } = values;
     modal.value.hide();
     if (!reservationEdit.value) {
+        debugger;
         if (classId) {
             var response = await YogaClassesService.editClass(classId, title, date, selectedDate.value)
                 .catch(error => setErrors({ apiError: error }));
             YogaClassesService.getAllByDate(selectedDate.value).then(x => yogaClasses.value = x);
             if (response == 200) toast.success("Class successfully editted.", { posistion: toast.POSITION.TOP_RIGHT })
             else toast.error("Something went wrong", { posistion: toast.POSITION.TOP_RIGHT })
+            formValues.classId = null;
         } else {
             var response = await YogaClassesService.saveClass(title, date, selectedDate.value)
                 .catch(error => setErrors({ apiError: error }));
@@ -212,14 +214,14 @@ const deleteYogaClass = async (id) => {
         </tbody>
     </table>
     <Modal ref="modal" maxWidth="800px" width="300px">
-        <template #header v-if="!reservationEdit">
-            <label class="col-form-label mb-2" style="font-size: 1.15em;">
-                Create Yoga Class
-            </label>
-        </template>
-        <template #header v-else-if="reservationAdd">
+        <template #header v-if="reservationAdd">
             <label class="col-form-label mb-2" style="font-size: 1.15em;">
                 Add a reservation
+            </label>
+        </template>
+        <template #header v-else-if="!reservationEdit">
+            <label class="col-form-label mb-2" style="font-size: 1.15em;">
+                Create Yoga Class
             </label>
         </template>
         <template #header v-else>
