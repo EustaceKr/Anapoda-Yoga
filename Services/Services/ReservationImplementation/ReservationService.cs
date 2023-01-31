@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Repositories.CustomerDAO;
 using Data.Repositories.ReservetionDAO;
 using Data.Repositories.YogaClassDAO;
 using System;
@@ -13,10 +14,12 @@ namespace Application.Services.ReservationImplementation
     {
         private readonly IReservationRepository _repository;
         private readonly IYogaClassRepository _yogaClassRepository;
-        public ReservationService(IReservationRepository repository, IYogaClassRepository yogaClassRepository)
+        private readonly ICustomerRepository _customerRepository;
+        public ReservationService(IReservationRepository repository, IYogaClassRepository yogaClassRepository, ICustomerRepository customerRepository)
         {
             _repository = repository;
             _yogaClassRepository = yogaClassRepository;
+            _customerRepository = customerRepository;
         }
 
         public async Task<IEnumerable<Reservation>> GetReservationsByUser(string userId)
@@ -37,8 +40,19 @@ namespace Application.Services.ReservationImplementation
         public void CreateReservation(Reservation reservation)
         {
             if (reservation == null) throw new ArgumentNullException(nameof(reservation));
-            reservation.ReservationId = Guid.NewGuid().ToString();
-            _repository.Create(reservation);
+            
+            if(reservation.Customer.TimesPerMonth > 0)
+            {
+                reservation.Customer.TimesPerMonth -= 1;
+                _customerRepository.Update(reservation.Customer);
+                reservation.ReservationId = Guid.NewGuid().ToString();
+                _repository.Create(reservation);
+            }
+            else
+            {
+                throw new InvalidOperationException("The customer has no more reservations left for this month.");
+            }
+            
         }
 
         public async Task<bool> CheckReservationExists(Reservation reservation, Customer user)
@@ -67,6 +81,8 @@ namespace Application.Services.ReservationImplementation
         public void DeleteReservation(Reservation reservation)
         {
             if (reservation == null) throw new ArgumentNullException(nameof(reservation));
+            reservation.Customer.TimesPerMonth += 1;
+            _customerRepository.Update(reservation.Customer);
             _repository.Delete(reservation);
         }
 

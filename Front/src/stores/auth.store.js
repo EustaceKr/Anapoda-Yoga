@@ -13,7 +13,6 @@ export const useAuthStore = defineStore({
     actions: {
         async login(username, password) {
             const user = await fetchWrapper.post(`${baseUrl}/Authenticate`, { username, password });
-            
             this.user = user.body;
             localStorage.setItem('userRole', JSON.stringify(user.body.userRole));
             localStorage.setItem('user', JSON.stringify(user.body));
@@ -40,6 +39,9 @@ export const useAuthStore = defineStore({
                 else return false
             }
             else return false
+        },
+        returnUserId(){
+            return this.user.userId
         }
     }
 });

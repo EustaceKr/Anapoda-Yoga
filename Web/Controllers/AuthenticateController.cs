@@ -48,6 +48,7 @@ namespace Web.Controllers
                 return Ok(new
                 {
                     userRole = await _userManager.GetRolesAsync(user),
+                    userId = user.Id,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });

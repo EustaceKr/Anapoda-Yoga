@@ -7,6 +7,10 @@ export default {
         var result = await fetchWrapper.get(`${baseUrl}/customers`)
         return result.body
     },
+    async getById(id){
+        var result = await fetchWrapper.get(`${baseUrl}/customers/${id}`)
+        return result.body
+    },
     async saveCustomer(firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCode, payDate, timesPerMonth, username, password) {
         var result = await fetchWrapper.post(`${baseUrl}/customers`, {
             firstName, lastName, phone, mobileNumber, dateOfBirth, sex, adress, city, state, postalCode, payDate, timesPerMonth

@@ -60,6 +60,7 @@ namespace Web.Controllers
 
             if (await _service.CheckReservationExists(reservationModel, user) && await _service.CheckCapacity(yogaClass))
             {
+                reservationModel.Customer = user;
                 _service.CreateReservation(reservationModel);
                 if (await _service.Complete())
                 {
@@ -80,6 +81,7 @@ namespace Web.Controllers
 
             if(DateTime.Now.AddHours(2) < yogaClass.Date)
             {
+                reservation.Customer = user;
                 _service.DeleteReservation(reservation);
                 await _service.Complete();
                 return Ok();
@@ -97,6 +99,7 @@ namespace Web.Controllers
             var user = await _customerService.GetCustomer(reservationModel.CustomerId);
             if (await _service.CheckReservationExists(reservationModel, user))
             {
+                reservationModel.Customer = user;
                 _service.CreateReservation(reservationModel);
                 if (await _service.Complete())
                 {
@@ -111,6 +114,7 @@ namespace Web.Controllers
             var reservation = await _service.GetReservationByClassAndCustomer(yogaClassId, customerId);
             if (reservation == null) return NotFound();
 
+            reservation.Customer = await _customerService.GetCustomer(reservation.CustomerId);
             _service.DeleteReservation(reservation);
             await _service.Complete();
             return Ok();

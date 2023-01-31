@@ -97,7 +97,7 @@ function showModal(classId, title, date) {
 function showReservationsModal(classId, title, date, isAdd) {
     if (isAdd) {
         reservationAdd.value = true
-        reservationEdit.value = true
+        reservationEdit.value = false
         CustomersService.getNotInYogaClass(classId).then(x => customers.value = x);
         formValues.classId = classId;
         formValues.title = title;

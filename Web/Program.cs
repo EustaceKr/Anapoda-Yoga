@@ -1,3 +1,4 @@
+using Application.BackgroundServices;
 using Application.Services.CustomerImplementation;
 using Application.Services.ReservationImplementation;
 using Application.Services.YogaClassImplementation;
@@ -18,6 +19,7 @@ using Newtonsoft.Json.Serialization;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +85,7 @@ builder.Services.AddScoped<IYogaClassTypeService, YogaClassTypeService>();
 builder.Services.AddScoped<IYogaClassService, YogaClassService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddHostedService<TimesPerMonthUpdater>();
 
 var app = builder.Build();
 
